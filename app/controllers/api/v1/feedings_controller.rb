@@ -5,11 +5,17 @@ class Api::V1::FeedingsController < ApplicationController
   def index
     feedings = current_baby.feedings.includes(:user).recent
 
-    feedings = feedings.for_date(Date.parse(params[:date])) if params[:date].present?
-    feedings = feedings.in_range(params[:from], params[:to]) if params[:from].present? && params[:to].present?
+    if params[:from].present? && params[:to].present?
+      tz = Time.zone
+      from_time = tz.parse(params[:from]).beginning_of_day
+      to_time = tz.parse(params[:to]).end_of_day
+      feedings = feedings.where(started_at: from_time..to_time)
+    elsif params[:date].present?
+      feedings = feedings.for_date(Date.parse(params[:date]))
+    end
     feedings = feedings.where(feed_type: params[:feed_type]) if params[:feed_type].present?
 
-    feedings = feedings.page(params[:page]).per(params[:per_page] || 20)
+    feedings = feedings.page(params[:page]).per(params[:per_page] || 50)
 
     render json: {
       data: feedings.map { |f| feeding_json(f) },
