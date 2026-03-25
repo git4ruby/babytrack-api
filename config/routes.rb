@@ -1,0 +1,69 @@
+Rails.application.routes.draw do
+  # Health check
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Devise JWT auth routes
+  devise_for :users,
+    path: "",
+    path_names: {
+      sign_in: "api/v1/auth/sign_in",
+      sign_out: "api/v1/auth/sign_out",
+      registration: "api/v1/auth/sign_up"
+    },
+    controllers: {
+      sessions: "api/v1/sessions",
+      registrations: "api/v1/registrations"
+    }
+
+  namespace :api do
+    namespace :v1 do
+      # Feedings
+      resources :feedings, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get :summary
+          get :last
+        end
+      end
+
+      # Weight Logs
+      resources :weight_logs, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get :percentiles
+        end
+      end
+
+      # Vaccinations
+      resources :vaccinations, only: [:index, :show, :update] do
+        member do
+          post :administer
+        end
+        collection do
+          get :upcoming
+        end
+      end
+
+      # Appointments
+      resources :appointments, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get :next_upcoming
+        end
+      end
+
+      # Milk Storage Inventory
+      resources :milk_stashes, only: [:index, :show, :create, :update] do
+        member do
+          post :consume
+          post :discard
+          post :transfer
+        end
+        collection do
+          get :inventory
+          get :history
+        end
+      end
+
+      # Baby info
+      resource :baby, only: [:show, :update]
+    end
+  end
+end

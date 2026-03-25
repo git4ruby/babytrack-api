@@ -1,0 +1,39 @@
+source "https://rubygems.org"
+
+gem "rails", "~> 8.0.4"
+gem "pg", "~> 1.1"
+gem "puma", ">= 5.0"
+gem "jbuilder"
+gem "tzinfo-data", platforms: %i[windows jruby]
+gem "bootsnap", require: false
+
+# Authentication
+gem "devise", "~> 4.9"
+gem "devise-jwt", "~> 0.12"
+
+# Background jobs
+gem "sidekiq", "~> 7.0"
+gem "sidekiq-scheduler", "~> 5.0"
+
+# API
+gem "rack-cors"
+gem "kaminari"
+
+# Soft delete
+gem "discard", "~> 1.3"
+
+# Environment variables
+gem "dotenv-rails"
+
+group :development, :test do
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
+
+  # Testing
+  gem "rspec-rails", "~> 7.0"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "shoulda-matchers"
+  gem "database_cleaner-active_record"
+end

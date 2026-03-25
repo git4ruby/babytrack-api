@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USERNAME", "babytrack") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "babytrack_dev") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+
+development:
+  <<: *default
+  database: babytrack_development
+
+test:
+  <<: *default
+  database: babytrack_test
+
+production:
+  <<: *default
+  database: babytrack_production
+  url: <%= ENV["DATABASE_URL"] %>
