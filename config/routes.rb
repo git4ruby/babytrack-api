@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resources :feedings, only: [:index, :show, :create, :update, :destroy] do
         collection do
           get :summary
+          get :analytics
           get :last
         end
       end

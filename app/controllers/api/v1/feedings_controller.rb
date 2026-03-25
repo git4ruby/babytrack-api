@@ -62,6 +62,15 @@ class Api::V1::FeedingsController < ApplicationController
     render json: { data: result }
   end
 
+  # GET /api/v1/feedings/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
+  def analytics
+    from_date = params[:from].present? ? Date.parse(params[:from]) : 7.days.ago.to_date
+    to_date = params[:to].present? ? Date.parse(params[:to]) : Date.current
+
+    result = FeedingAnalyticsService.new(current_baby, from_date, to_date).call
+    render json: { data: result }
+  end
+
   # GET /api/v1/feedings/last
   def last
     feeding = current_baby.feedings.recent.first
