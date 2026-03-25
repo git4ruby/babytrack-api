@@ -20,7 +20,7 @@ class FeedingAnalyticsService
   def feedings
     @feedings ||= @baby.feedings.unscoped.kept.where(baby: @baby)
       .in_range(@from.beginning_of_day, @to.end_of_day)
-      .chronological
+      .reorder("")
   end
 
   def daily_totals
