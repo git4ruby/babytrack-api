@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Feedings", type: :request do
   let!(:user) { create(:user) }
-  let!(:baby) { create(:baby) }
+  let!(:baby) { create(:baby, user: user) }
   let(:headers) { auth_headers(user) }
 
   def json_body

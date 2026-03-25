@@ -1,4 +1,5 @@
 class Baby < ApplicationRecord
+  belongs_to :user, optional: true
   has_many :feedings, dependent: :destroy
   has_many :weight_logs, dependent: :destroy
   has_many :vaccinations, dependent: :destroy

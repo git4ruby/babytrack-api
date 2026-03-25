@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_25_200000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_25_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -46,6 +46,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_200000) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_babies_on_user_id"
   end
 
   create_table "diaper_changes", force: :cascade do |t|
@@ -180,6 +182,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_200000) do
 
   add_foreign_key "appointments", "babies"
   add_foreign_key "appointments", "users"
+  add_foreign_key "babies", "users"
   add_foreign_key "diaper_changes", "babies"
   add_foreign_key "diaper_changes", "users"
   add_foreign_key "feedings", "babies"

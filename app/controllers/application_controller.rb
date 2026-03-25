@@ -4,6 +4,10 @@ class ApplicationController < ActionController::API
   private
 
   def current_baby
-    @current_baby ||= Baby.first
+    @current_baby ||= if params[:baby_id].present?
+      current_user.babies.find(params[:baby_id])
+    else
+      current_user.babies.first
+    end
   end
 end

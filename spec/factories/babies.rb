@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :baby do
+    user
     name { "Test Baby" }
     date_of_birth { Date.new(2026, 3, 9) }
     gender { "male" }
