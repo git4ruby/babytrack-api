@@ -63,6 +63,14 @@ Rails.application.routes.draw do
         end
       end
 
+      # Diaper Changes
+      resources :diaper_changes, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get :summary
+          get :stats
+        end
+      end
+
       # Baby info
       resource :baby, only: [:show, :update]
     end

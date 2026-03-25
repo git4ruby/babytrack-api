@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_25_100100) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_25_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -46,6 +46,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_100100) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "diaper_changes", force: :cascade do |t|
+    t.bigint "baby_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "changed_at", null: false
+    t.string "diaper_type", null: false
+    t.string "stool_color"
+    t.string "consistency"
+    t.boolean "has_rash", default: false, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["baby_id", "changed_at"], name: "index_diaper_changes_on_baby_id_and_changed_at"
+    t.index ["baby_id", "diaper_type"], name: "index_diaper_changes_on_baby_id_and_diaper_type"
+    t.index ["baby_id"], name: "index_diaper_changes_on_baby_id"
+    t.index ["user_id"], name: "index_diaper_changes_on_user_id"
   end
 
   create_table "feedings", force: :cascade do |t|
@@ -163,6 +180,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_100100) do
 
   add_foreign_key "appointments", "babies"
   add_foreign_key "appointments", "users"
+  add_foreign_key "diaper_changes", "babies"
+  add_foreign_key "diaper_changes", "users"
   add_foreign_key "feedings", "babies"
   add_foreign_key "feedings", "users"
   add_foreign_key "milk_stash_logs", "feedings"
