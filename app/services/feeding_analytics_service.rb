@@ -1,4 +1,7 @@
 class FeedingAnalyticsService
+  TZ = "America/New_York"
+  DATE_IN_TZ = "DATE(started_at AT TIME ZONE 'UTC' AT TIME ZONE '#{TZ}')"
+
   def initialize(baby, from_date, to_date)
     @baby = baby
     @from = from_date
@@ -17,15 +20,19 @@ class FeedingAnalyticsService
 
   private
 
+  def tz
+    @tz ||= ActiveSupport::TimeZone[TZ]
+  end
+
   def feedings
     @feedings ||= @baby.feedings.unscoped.kept.where(baby: @baby)
-      .in_range(@from.beginning_of_day, @to.end_of_day)
+      .where(started_at: tz.parse(@from.to_s).beginning_of_day..tz.parse(@to.to_s).end_of_day)
       .reorder("")
   end
 
   def daily_totals
     feedings.where.not(volume_ml: nil)
-      .group("DATE(started_at)")
+      .group(Arel.sql(DATE_IN_TZ))
       .sum(:volume_ml)
       .transform_keys(&:to_s)
   end
@@ -49,12 +56,15 @@ class FeedingAnalyticsService
   end
 
   def daily_feed_counts
-    feedings.group("DATE(started_at)").count.transform_keys(&:to_s)
+    feedings.group(Arel.sql(DATE_IN_TZ)).count.transform_keys(&:to_s)
   end
 
   def average_gap_by_day
     result = {}
-    feedings.group("DATE(started_at)").pluck(Arel.sql("DATE(started_at)"), Arel.sql("ARRAY_AGG(started_at ORDER BY started_at)")).each do |date, times|
+    rows = feedings.group(Arel.sql(DATE_IN_TZ))
+      .pluck(Arel.sql(DATE_IN_TZ), Arel.sql("ARRAY_AGG(started_at ORDER BY started_at)"))
+
+    rows.each do |date, times|
       next if times.size < 2
       gaps = times.each_cons(2).map { |a, b| (b - a) / 3600.0 }
       result[date.to_s] = (gaps.sum / gaps.size).round(2)

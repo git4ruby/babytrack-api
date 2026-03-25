@@ -128,10 +128,12 @@ RSpec.describe "Api::V1::Feedings", type: :request do
 
   describe "GET /api/v1/feedings/summary" do
     it "returns daily summary" do
-      create(:feeding, :bottle, baby: baby, user: user, started_at: 3.hours.ago, volume_ml: 60)
-      create(:feeding, :bottle, baby: baby, user: user, started_at: 1.hour.ago, volume_ml: 80)
+      # Use midday times to avoid timezone boundary issues
+      today_noon = Time.zone.parse(Date.current.to_s + " 12:00:00")
+      create(:feeding, :bottle, baby: baby, user: user, started_at: today_noon - 2.hours, volume_ml: 60)
+      create(:feeding, :bottle, baby: baby, user: user, started_at: today_noon - 1.hour, volume_ml: 80)
       create(:feeding, :breastfeed, baby: baby, user: user,
-        started_at: 2.hours.ago, ended_at: 90.minutes.ago, breast_side: "left")
+        started_at: today_noon, ended_at: today_noon + 30.minutes, breast_side: "left")
 
       get "/api/v1/feedings/summary", params: { date: Date.current.to_s }, headers: headers
 

@@ -26,20 +26,21 @@ class FeedingSummaryService
   private
 
   def feedings
-    @feedings ||= case @range
-    when "week"
-      @baby.feedings.unscoped.kept.where(baby: @baby)
-        .in_range(@date.beginning_of_week, @date.end_of_week)
-        .chronological
-    when "month"
-      @baby.feedings.unscoped.kept.where(baby: @baby)
-        .in_range(@date.beginning_of_month, @date.end_of_month)
-        .chronological
-    else
-      @baby.feedings.unscoped.kept.where(baby: @baby)
-        .for_date(@date)
-        .chronological
+    @feedings ||= begin
+      base = @baby.feedings.unscoped.kept.where(baby: @baby)
+      case @range
+      when "week"
+        base.where(started_at: tz.parse(@date.beginning_of_week.to_s).beginning_of_day..tz.parse(@date.end_of_week.to_s).end_of_day).chronological
+      when "month"
+        base.where(started_at: tz.parse(@date.beginning_of_month.to_s).beginning_of_day..tz.parse(@date.end_of_month.to_s).end_of_day).chronological
+      else
+        base.for_date(@date).chronological
+      end
     end
+  end
+
+  def tz
+    @tz ||= Time.zone || ActiveSupport::TimeZone["America/New_York"]
   end
 
   def total_ml

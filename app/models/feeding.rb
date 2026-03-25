@@ -13,7 +13,12 @@ class Feeding < ApplicationRecord
   validates :breast_side, inclusion: { in: %w[left right both] }, allow_nil: true
   validate :validate_feed_type_fields
 
-  scope :for_date, ->(date) { where(started_at: date.all_day) }
+  scope :for_date, ->(date) {
+    tz = Time.zone || ActiveSupport::TimeZone["America/New_York"]
+    day_start = tz.parse(date.to_s).beginning_of_day
+    day_end = tz.parse(date.to_s).end_of_day
+    where(started_at: day_start..day_end)
+  }
   scope :in_range, ->(from, to) { where(started_at: from..to) }
   scope :recent, -> { order(started_at: :desc) }
   scope :chronological, -> { order(started_at: :asc) }
