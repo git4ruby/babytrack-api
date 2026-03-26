@@ -71,6 +71,9 @@ Rails.application.routes.draw do
         end
       end
 
+      # Milestones
+      resources :milestones, only: [:index, :show, :create, :update, :destroy]
+
       # Baby info
       resource :baby, only: [:show, :update]   # current baby
       resources :babies, only: [:index, :create] # list + add babies

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_25_210000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_26_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -89,6 +89,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_210000) do
     t.index ["feed_type"], name: "index_feedings_on_feed_type"
     t.index ["session_group"], name: "index_feedings_on_session_group"
     t.index ["user_id"], name: "index_feedings_on_user_id"
+  end
+
+  create_table "milestones", force: :cascade do |t|
+    t.bigint "baby_id", null: false
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.date "achieved_on", null: false
+    t.string "category"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["baby_id", "achieved_on"], name: "index_milestones_on_baby_id_and_achieved_on"
+    t.index ["baby_id", "category"], name: "index_milestones_on_baby_id_and_category"
+    t.index ["baby_id"], name: "index_milestones_on_baby_id"
+    t.index ["user_id"], name: "index_milestones_on_user_id"
   end
 
   create_table "milk_stash_logs", force: :cascade do |t|
@@ -187,6 +203,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_210000) do
   add_foreign_key "diaper_changes", "users"
   add_foreign_key "feedings", "babies"
   add_foreign_key "feedings", "users"
+  add_foreign_key "milestones", "babies"
+  add_foreign_key "milestones", "users"
   add_foreign_key "milk_stash_logs", "feedings"
   add_foreign_key "milk_stash_logs", "milk_stashes"
   add_foreign_key "milk_stash_logs", "users"
