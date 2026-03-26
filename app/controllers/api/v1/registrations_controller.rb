@@ -10,7 +10,8 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
           id: resource.id,
           email: resource.email,
           name: resource.name,
-          role: resource.role
+          role: resource.role,
+          phone_number: resource.phone_number
         },
         message: "Signed up successfully."
       }, status: :created
@@ -23,5 +24,9 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(:email, :password, :password_confirmation, :name)
+  end
+
+  def account_update_params
+    params.require(:user).permit(:name, :phone_number)
   end
 end

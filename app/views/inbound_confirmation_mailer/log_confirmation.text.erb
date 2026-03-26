@@ -1,0 +1,21 @@
+BabyTrack - Log Confirmation
+============================
+
+Hi <%= @user.name %>,
+
+Your message via <%= @source.upcase %> was processed for <%= @baby.name %>:
+
+Original message: "<%= @original_message %>"
+
+Results:
+<% @results.each do |result| %>
+<%= result[:success] ? "✓" : "✗" %> <%= result[:message] %>
+<% end %>
+
+<% if @fail_count > 0 %>
+<%= @fail_count %> item(s) could not be logged. Please check the app or try again.
+<% end %>
+
+---
+Logged at <%= Time.current.in_time_zone("America/New_York").strftime("%I:%M %p %Z on %B %d, %Y") %>
+BabyTrack - Simple tracking for your little one

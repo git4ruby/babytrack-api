@@ -19,6 +19,13 @@ gem "sidekiq-scheduler", "~> 5.0"
 gem "rack-cors"
 gem "kaminari"
 
+# Twilio SMS
+gem "twilio-ruby", "~> 7.0"
+
+# Gmail polling
+gem "net-imap"
+gem "mail"
+
 # Soft delete
 gem "discard", "~> 1.3"
 

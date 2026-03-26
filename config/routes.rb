@@ -17,6 +17,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      # Inbound SMS webhook
+      post "sms/incoming", to: "sms#incoming"
+
       # Feedings
       resources :feedings, only: [:index, :show, :create, :update, :destroy] do
         collection do
