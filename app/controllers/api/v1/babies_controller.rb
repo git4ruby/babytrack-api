@@ -27,13 +27,36 @@ class Api::V1::BabiesController < ApplicationController
     end
   end
 
-  # PATCH /api/v1/baby
+  # PATCH /api/v1/baby (update current baby)
   def update
     if current_baby.update(baby_params)
       render json: { data: baby_json(current_baby) }
     else
       render json: { errors: current_baby.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  # PATCH /api/v1/babies/:id
+  def update_baby
+    baby = current_user.babies.find(params[:id])
+    if baby.update(baby_params)
+      render json: { data: baby_json(baby) }
+    else
+      render json: { errors: baby.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /api/v1/babies/:id
+  def destroy
+    baby = current_user.babies.find(params[:id])
+
+    if current_user.babies.count <= 1
+      render json: { error: "Cannot delete your only baby. You must have at least one baby profile." }, status: :unprocessable_entity
+      return
+    end
+
+    baby.destroy
+    render json: { message: "Baby profile deleted" }
   end
 
   private

@@ -79,7 +79,7 @@ Rails.application.routes.draw do
 
       # Baby info
       resource :baby, only: [:show, :update]   # current baby
-      resources :babies, only: [:index, :create] # list + add babies
+      resources :babies, only: [:index, :create, :update, :destroy] # list + CRUD
     end
   end
 end
