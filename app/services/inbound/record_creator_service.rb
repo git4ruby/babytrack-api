@@ -27,7 +27,6 @@ module Inbound
 
     def parse_time(time_str)
       return Time.current unless time_str.present?
-      # Try full ISO datetime first (2026-03-26T13:25:00), then time-only fallback
       Time.zone.parse(time_str)
     rescue
       begin
@@ -45,11 +44,31 @@ module Inbound
     end
 
     def create_feeding(data)
+      started = parse_time(data["started_at"])
+
+      # Dedup: check if same baby + started_at + feed_type already exists
+      existing = @baby.feedings.unscoped.where(
+        baby: @baby,
+        started_at: (started - 2.minutes)..(started + 2.minutes),
+        feed_type: data["feed_type"]
+      )
+      if data["volume_ml"] && data["feed_type"] != "breastfeed"
+        existing = existing.where(volume_ml: data["volume_ml"])
+      end
+      if existing.exists?
+        detail = case data["feed_type"]
+        when "bottle" then "Bottle #{data['volume_ml']}ml"
+        when "breastfeed" then "Breastfeed #{data['breast_side']}"
+        when "pump" then "Pump #{data['volume_ml']}ml"
+        end
+        return { success: true, type: "feeding", message: "#{detail} (already exists, skipped)", skipped: true }
+      end
+
       attrs = {
         baby: @baby,
         user: @user,
         feed_type: data["feed_type"],
-        started_at: parse_time(data["started_at"]),
+        started_at: started,
       }
 
       case data["feed_type"]
@@ -80,10 +99,20 @@ module Inbound
     end
 
     def create_diaper(data)
+      changed = parse_time(data["changed_at"])
+
+      # Dedup: same baby + time (within 2 min) + type
+      if @baby.diaper_changes.where(
+        changed_at: (changed - 2.minutes)..(changed + 2.minutes),
+        diaper_type: data["diaper_type"]
+      ).exists?
+        return { success: true, type: "diaper", message: "Diaper #{data['diaper_type']} (already exists, skipped)", skipped: true }
+      end
+
       change = DiaperChange.create!(
         baby: @baby,
         user: @user,
-        changed_at: parse_time(data["changed_at"]),
+        changed_at: changed,
         diaper_type: data["diaper_type"] || "wet",
         stool_color: data["stool_color"],
         consistency: data["consistency"],
@@ -98,6 +127,11 @@ module Inbound
     end
 
     def create_milestone(data)
+      # Dedup: same title + date
+      if @baby.milestones.where(title: data["title"], achieved_on: parse_date(data["achieved_on"])).exists?
+        return { success: true, type: "milestone", message: "Milestone: #{data['title']} (already exists, skipped)", skipped: true }
+      end
+
       milestone = Milestone.create!(
         baby: @baby,
         user: @user,
@@ -113,6 +147,11 @@ module Inbound
     end
 
     def create_weight(data)
+      # Dedup: same weight on same day
+      if @baby.weight_logs.where(recorded_at: Date.current, weight_grams: data["weight_grams"]).exists?
+        return { success: true, type: "weight", message: "Weight #{data['weight_grams']}g (already exists, skipped)", skipped: true }
+      end
+
       log = WeightLog.create!(
         baby: @baby,
         user: @user,
