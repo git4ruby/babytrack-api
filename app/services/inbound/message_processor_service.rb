@@ -7,11 +7,15 @@ module Inbound
     end
 
     def process
-      return error_result("No baby profile found. Please set up a baby first.") if @user.babies.empty?
+      if @user.babies.empty?
+        return error_with_email("No baby profile found. Please set up a baby in the app first.")
+      end
       return error_result("Message is empty.") if @message.blank?
 
       @baby = resolve_baby
-      return error_result(@baby_error) if @baby.nil?
+      if @baby.nil?
+        return error_with_email(@baby_error)
+      end
 
       # Parse with Gemini AI
       parsed_actions = GeminiParserService.new(@message).parse
@@ -49,25 +53,22 @@ module Inbound
         end
       end
 
-      # No name found — use the most recently active baby
-      # (the one with the latest feeding or diaper change)
-      most_active = babies.left_joins(:feedings, :diaper_changes)
-        .select("babies.*, GREATEST(MAX(feedings.started_at), MAX(diaper_changes.changed_at)) AS last_activity")
-        .group("babies.id")
-        .order(Arel.sql("GREATEST(MAX(feedings.started_at), MAX(diaper_changes.changed_at)) DESC NULLS LAST"))
-        .first
-
-      if most_active
-        Rails.logger.info("Inbound: no baby name in message, using most recently active: #{most_active.name}")
-        return most_active
-      end
-
-      # Fallback to first baby
-      babies.first
+      # No name found — don't guess, reject the message
+      baby_names = babies.map { |b| b.name.split.first }.join(", ")
+      @baby_error = "You have multiple babies (#{baby_names}). Please include the baby's name in your message, e.g. \"#{babies.first.name.split.first} bottle 90ml\". No data was added."
+      Rails.logger.warn("Inbound: multiple babies, no name in message — rejecting")
+      nil
     end
 
     def error_result(msg)
       [{ success: false, message: msg }]
+    end
+
+    def error_with_email(msg)
+      results = [{ success: false, message: msg }]
+      @baby = @user.babies.first # may be nil, that's ok for the mailer
+      send_confirmation(results) if @baby
+      results
     end
 
     def send_confirmation(results)
