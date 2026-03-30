@@ -27,9 +27,21 @@ module Inbound
 
     def parse_time(time_str)
       return Time.current unless time_str.present?
-      Time.zone.parse("#{Date.current} #{time_str}")
+      # Try full ISO datetime first (2026-03-26T13:25:00), then time-only fallback
+      Time.zone.parse(time_str)
     rescue
-      Time.current
+      begin
+        Time.zone.parse("#{Date.current} #{time_str}")
+      rescue
+        Time.current
+      end
+    end
+
+    def parse_date(date_str)
+      return Date.current unless date_str.present?
+      Date.parse(date_str)
+    rescue
+      Date.current
     end
 
     def create_feeding(data)
@@ -92,7 +104,7 @@ module Inbound
         title: data["title"],
         description: data["description"],
         category: data["category"],
-        achieved_on: data["achieved_on"] || Date.current,
+        achieved_on: parse_date(data["achieved_on"]),
         notes: data["notes"]
       )
       { success: true, type: "milestone", message: "Milestone: #{data['title']}", record: milestone }
