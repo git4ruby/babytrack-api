@@ -3,7 +3,7 @@ require "json"
 
 module Inbound
   class GeminiParserService
-    API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
     SYSTEM_PROMPT = <<~PROMPT
       You are a baby tracking assistant. Parse the user's message into a structured JSON action.
@@ -90,12 +90,27 @@ module Inbound
     end
 
     def parse_response(response)
-      text = response.dig("candidates", 0, "content", "parts", 0, "text")
+      # Gemini 2.5 may return multiple parts (thinking + response)
+      # Find the last non-thought text part
+      parts = response.dig("candidates", 0, "content", "parts") || []
+      text = nil
+      parts.reverse_each do |part|
+        next if part["thought"] == true
+        if part["text"].present?
+          text = part["text"]
+          break
+        end
+      end
+
       return [{ "action" => "unknown", "message" => "Empty AI response" }] unless text
+
+      # Strip markdown code fences if present
+      text = text.gsub(/```json\s*/i, "").gsub(/```\s*/, "").strip
 
       parsed = JSON.parse(text)
       parsed.is_a?(Array) ? parsed : [parsed]
-    rescue JSON::ParserError
+    rescue JSON::ParserError => e
+      Rails.logger.error("Gemini JSON parse error: #{e.message} — raw: #{text&.truncate(300)}")
       [{ "action" => "unknown", "message" => "Could not parse AI response" }]
     end
   end
