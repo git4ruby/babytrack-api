@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_26_110000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_31_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -53,7 +53,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_26_110000) do
   create_table "diaper_changes", force: :cascade do |t|
     t.bigint "baby_id", null: false
     t.bigint "user_id", null: false
-    t.datetime "changed_at", null: false
+    t.datetime "changed_at"
     t.string "diaper_type", null: false
     t.string "stool_color"
     t.string "consistency"

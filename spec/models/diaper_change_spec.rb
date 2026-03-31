@@ -7,7 +7,6 @@ RSpec.describe DiaperChange, type: :model do
   end
 
   describe "validations" do
-    it { should validate_presence_of(:changed_at) }
     it { should validate_presence_of(:diaper_type) }
   end
 

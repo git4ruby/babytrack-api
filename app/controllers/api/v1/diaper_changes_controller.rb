@@ -85,10 +85,10 @@ class Api::V1::DiaperChangesController < ApplicationController
     to_date = params[:to].present? ? Date.parse(params[:to]) : Date.current
 
     tz = Time.zone
-    changes = current_baby.diaper_changes
-      .where(changed_at: tz.parse(from_date.to_s).beginning_of_day..tz.parse(to_date.to_s).end_of_day)
+    changes = current_baby.diaper_changes.in_range(from_date, to_date)
 
-    date_sql = "DATE(changed_at AT TIME ZONE 'UTC' AT TIME ZONE '#{tz.tzinfo.name}')"
+    coalesce = "COALESCE(changed_at, created_at)"
+    date_sql = "DATE(#{coalesce} AT TIME ZONE 'UTC' AT TIME ZONE '#{tz.tzinfo.name}')"
 
     daily_counts = changes.group(Arel.sql(date_sql)).count.transform_keys(&:to_s)
     daily_wet = changes.wet_or_both.group(Arel.sql(date_sql)).count.transform_keys(&:to_s)
@@ -128,7 +128,8 @@ class Api::V1::DiaperChangesController < ApplicationController
   def change_json(change)
     {
       id: change.id,
-      changed_at: change.changed_at,
+      changed_at: change.display_time,
+      has_time: change.changed_at.present?,
       diaper_type: change.diaper_type,
       stool_color: change.stool_color,
       consistency: change.consistency,
