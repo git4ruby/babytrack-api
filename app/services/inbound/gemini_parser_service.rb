@@ -31,6 +31,8 @@ module Inbound
       - Time ranges like "2:30-2:50 PM" or duration with "left/right/both" → breastfeed
       - "pumped", "pump", "expressed" → pump (if volume given) or milk_storage (if "stored", "fridge", "freezer" mentioned)
       - "diaper", "pee", "wet", "poop", "soiled", "dirty" → diaper change
+      - Diaper counts like "Wet - 3" or "Poop - 3" or "Both - 1" → create MULTIPLE diaper entries, one per count. "Wet - 3" = three separate diaper entries with diaper_type "wet". No time needed (changed_at = null).
+      - "Diapers" as a section header means the following lines are diaper entries
       - "milestone", "first time", "first smile", "rolled over" etc → milestone
       - "weight", "weighed", "kg", "lbs", "grams" → weight
       - "stored", "fridge", "freezer", "room temp" → milk_storage
