@@ -99,10 +99,11 @@ module Inbound
     end
 
     def create_diaper(data)
-      changed = parse_time(data["changed_at"])
+      has_time = data["changed_at"].present?
+      changed = has_time ? parse_time(data["changed_at"]) : nil
 
-      # Dedup: same baby + time (within 2 min) + type
-      if @baby.diaper_changes.where(
+      # Dedup: only when explicit time is given
+      if has_time && @baby.diaper_changes.where(
         changed_at: (changed - 2.minutes)..(changed + 2.minutes),
         diaper_type: data["diaper_type"]
       ).exists?
