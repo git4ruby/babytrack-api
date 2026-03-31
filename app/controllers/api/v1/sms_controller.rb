@@ -8,12 +8,12 @@ class Api::V1::SmsController < ApplicationController
 
     Rails.logger.info("SMS received from #{from_number}: #{body}")
 
-    # Find user by phone number
-    user = User.find_by(phone_number: from_number)
+    # Find user by phone number (supports multiple comma-separated numbers)
+    user = User.where("phone_number LIKE ?", "%#{from_number}%").first
 
     unless user
       Rails.logger.warn("SMS from unknown number: #{from_number}")
-      render xml: twiml_response("This phone number is not linked to a BabyTrack account. Please link your number in the app settings.")
+      render xml: twiml_response
       return
     end
 
@@ -24,14 +24,12 @@ class Api::V1::SmsController < ApplicationController
       source: "sms"
     )
 
-    render xml: twiml_response("Got it! Processing your message.")
+    render xml: twiml_response
   end
 
   private
 
-  def twiml_response(message)
-    # Minimal TwiML response (no SMS reply to save cost — confirmation via email)
-    # Return empty TwiML to avoid sending SMS reply
+  def twiml_response
     '<?xml version="1.0" encoding="UTF-8"?><Response></Response>'
   end
 end
