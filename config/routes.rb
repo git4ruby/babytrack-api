@@ -20,6 +20,9 @@ Rails.application.routes.draw do
       # Inbound SMS webhook
       post "sms/incoming", to: "sms#incoming"
 
+      # User profile
+      resource :profile, only: [:show, :update], controller: "profile"
+
       # Feedings
       resources :feedings, only: [:index, :show, :create, :update, :destroy] do
         collection do
