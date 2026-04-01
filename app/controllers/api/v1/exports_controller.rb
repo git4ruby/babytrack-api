@@ -1,15 +1,18 @@
 require "csv"
 
 class Api::V1::ExportsController < ApplicationController
-  before_action :authenticate_from_token_param
+  skip_before_action :authenticate_user!
+  before_action :authenticate_from_token!
 
-  private def authenticate_from_token_param
-    return if current_user # already authenticated via header
+  private
+
+  def authenticate_from_token!
     if params[:token].present?
-      # Allow JWT via query param for download links
       request.headers["Authorization"] = "Bearer #{params[:token]}"
     end
+    authenticate_user!
   end
+
   public
   # GET /api/v1/exports/feedings.csv
   def feedings
