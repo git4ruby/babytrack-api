@@ -23,6 +23,12 @@ Rails.application.routes.draw do
       # User profile
       resource :profile, only: [:show, :update], controller: "profile"
 
+      # CSV Exports
+      get "exports/feedings", to: "exports#feedings"
+      get "exports/diapers", to: "exports#diapers"
+      get "exports/weight", to: "exports#weight"
+      get "exports/all", to: "exports#all"
+
       # Feedings
       resources :feedings, only: [:index, :show, :create, :update, :destroy] do
         collection do

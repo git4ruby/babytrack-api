@@ -45,14 +45,25 @@ class Api::V1::WeightLogsController < ApplicationController
 
   # GET /api/v1/weight_logs/percentiles
   def percentiles
-    logs = current_baby.weight_logs.chronological
+    service = WhoPercentileService.new(current_baby.gender)
+    max_days = [current_baby.age_in_days + 30, 365].min
+    curves = service.weight_for_age_curves(max_days)
+
+    logs = current_baby.weight_logs.chronological.map do |l|
+      age = (l.recorded_at - current_baby.date_of_birth).to_i
+      {
+        recorded_at: l.recorded_at,
+        weight_grams: l.weight_grams,
+        age_days: age,
+        percentile: service.percentile_for(age, l.weight_grams)
+      }
+    end
+
     render json: {
-      data: logs.map { |l|
-        {
-          recorded_at: l.recorded_at,
-          weight_grams: l.weight_grams,
-          age_days: (l.recorded_at - current_baby.date_of_birth).to_i
-        }
+      data: {
+        measurements: logs,
+        curves: curves,
+        gender: current_baby.gender
       }
     }
   end

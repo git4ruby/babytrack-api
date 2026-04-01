@@ -40,14 +40,15 @@ class GmailPollJob < ApplicationJob
           Rails.logger.warn("Email from unknown sender or empty body: #{from_email}")
         end
 
-        # Mark as read
-        imap.store(uid, "+FLAGS", [:Seen])
+        # Mark as read and delete from inbox (move to trash)
+        imap.store(uid, "+FLAGS", [:Seen, :Deleted])
       rescue => e
         Rails.logger.error("Failed to process email UID #{uid}: #{e.message}")
         imap.store(uid, "+FLAGS", [:Seen]) # Mark read anyway to avoid reprocessing
       end
     end
 
+    imap.expunge  # permanently remove deleted messages
     imap.logout
     imap.disconnect
   rescue => e

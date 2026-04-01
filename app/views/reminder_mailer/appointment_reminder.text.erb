@@ -1,0 +1,15 @@
+BabyTrack - Appointment Reminder
+==================================
+
+Hi <%= @user.name %>,
+
+This is a reminder about an upcoming appointment for <%= @baby.name %>:
+
+  <%= @appointment.title %>
+  Date: <%= @appointment.scheduled_at.in_time_zone("America/New_York").strftime("%A, %B %d, %Y at %I:%M %p") %>
+<% if @appointment.provider_name.present? %>  Provider: <%= @appointment.provider_name %><% end %>
+<% if @appointment.location.present? %>  Location: <%= @appointment.location %><% end %>
+<% if @appointment.notes.present? %>  Notes: <%= @appointment.notes %><% end %>
+
+---
+BabyTrack - Simple tracking for your little one

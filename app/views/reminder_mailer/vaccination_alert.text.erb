@@ -1,0 +1,15 @@
+BabyTrack - Vaccination Alert
+==============================
+
+Hi <%= @user.name %>,
+
+The following vaccine(s) are due soon for <%= @baby.name %>:
+
+<% @vaccines.each do |v| %>
+  - <%= v.vaccine_name %> — Due: <%= v.recommended_date.strftime("%B %d, %Y") %><%= " (#{v.description})" if v.description.present? %>
+<% end %>
+
+Please schedule an appointment with your pediatrician if you haven't already.
+
+---
+BabyTrack - Simple tracking for your little one
