@@ -16,4 +16,5 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 20m
           script: /home/ubuntu/babytrack/deploy.sh
