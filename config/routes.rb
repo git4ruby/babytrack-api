@@ -21,7 +21,9 @@ Rails.application.routes.draw do
       post "sms/incoming", to: "sms#incoming"
 
       # User profile
-      resource :profile, only: [:show, :update], controller: "profile"
+      resource :profile, only: [:show, :update], controller: "profile" do
+        patch :change_password, on: :member
+      end
 
       # CSV Exports
       get "exports/feedings", to: "exports#feedings"
