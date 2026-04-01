@@ -66,7 +66,7 @@ Rails.application.routes.draw do
       end
 
       # Milk Storage Inventory
-      resources :milk_stashes, only: [ :index, :show, :create, :update ] do
+      resources :milk_stashes, only: [ :index, :show, :create, :update, :destroy ] do
         member do
           post :consume
           post :discard
