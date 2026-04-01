@@ -1,5 +1,5 @@
 class Api::V1::MilkStashesController < ApplicationController
-  before_action :set_stash, only: [ :show, :update, :consume, :discard, :transfer ]
+  before_action :set_stash, only: [ :show, :update, :destroy, :consume, :discard, :transfer ]
 
   # GET /api/v1/milk_stashes
   def index
@@ -49,6 +49,12 @@ class Api::V1::MilkStashesController < ApplicationController
     else
       render json: { errors: @stash.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  # DELETE /api/v1/milk_stashes/:id
+  def destroy
+    @stash.destroy
+    head :no_content
   end
 
   # POST /api/v1/milk_stashes/:id/consume
@@ -147,7 +153,7 @@ class Api::V1::MilkStashesController < ApplicationController
   end
 
   def stash_update_params
-    params.require(:milk_stash).permit(:label, :notes)
+    params.require(:milk_stash).permit(:label, :notes, :volume_ml, :remaining_ml, :storage_type, :stored_at)
   end
 
   def stash_json(stash)
