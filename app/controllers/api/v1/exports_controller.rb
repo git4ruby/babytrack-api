@@ -49,6 +49,7 @@ class Api::V1::ExportsController < ApplicationController
   # GET /api/v1/exports/weight.csv
   def weight
     logs = current_baby.weight_logs.includes(:user).chronological
+    logs = logs.where(recorded_at: Date.parse(params[:from])..Date.parse(params[:to])) if params[:from].present?
 
     csv = CSV.generate(headers: true) do |row|
       row << ["Date", "Weight (g)", "Weight (kg)", "Height (cm)", "Head (cm)", "Measured By", "Notes"]
@@ -58,6 +59,21 @@ class Api::V1::ExportsController < ApplicationController
     end
 
     send_data csv, filename: "#{current_baby.name.parameterize}-weight-#{Date.current}.csv", type: "text/csv"
+  end
+
+  # GET /api/v1/exports/milestones.csv
+  def milestones
+    records = current_baby.milestones.chronological
+    records = records.where(achieved_on: Date.parse(params[:from])..Date.parse(params[:to])) if params[:from].present?
+
+    csv = CSV.generate(headers: true) do |row|
+      row << ["Date", "Title", "Category", "Age (days)", "Description", "Notes"]
+      records.each do |m|
+        row << [m.achieved_on, m.title, m.category, m.age_at_milestone, m.description, m.notes]
+      end
+    end
+
+    send_data csv, filename: "#{current_baby.name.parameterize}-milestones-#{Date.current}.csv", type: "text/csv"
   end
 
   # GET /api/v1/exports/all.csv — combined summary

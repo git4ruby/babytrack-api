@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       get "exports/feedings", to: "exports#feedings"
       get "exports/diapers", to: "exports#diapers"
       get "exports/weight", to: "exports#weight"
+      get "exports/milestones", to: "exports#milestones"
       get "exports/all", to: "exports#all"
 
       # Feedings
