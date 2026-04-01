@@ -1,6 +1,16 @@
 require "csv"
 
 class Api::V1::ExportsController < ApplicationController
+  before_action :authenticate_from_token_param
+
+  private def authenticate_from_token_param
+    return if current_user # already authenticated via header
+    if params[:token].present?
+      # Allow JWT via query param for download links
+      request.headers["Authorization"] = "Bearer #{params[:token]}"
+    end
+  end
+  public
   # GET /api/v1/exports/feedings.csv
   def feedings
     feedings = current_baby.feedings.includes(:user).order(started_at: :desc)
