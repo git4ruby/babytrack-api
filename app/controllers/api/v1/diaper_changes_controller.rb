@@ -1,5 +1,5 @@
 class Api::V1::DiaperChangesController < ApplicationController
-  before_action :set_diaper_change, only: [:show, :update, :destroy]
+  before_action :set_diaper_change, only: [ :show, :update, :destroy ]
 
   # GET /api/v1/diaper_changes
   def index

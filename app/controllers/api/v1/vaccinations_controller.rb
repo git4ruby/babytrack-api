@@ -1,5 +1,5 @@
 class Api::V1::VaccinationsController < ApplicationController
-  before_action :set_vaccination, only: [:show, :update, :administer]
+  before_action :set_vaccination, only: [ :show, :update, :administer ]
 
   # GET /api/v1/vaccinations
   def index

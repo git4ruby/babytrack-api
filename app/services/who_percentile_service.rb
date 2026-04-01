@@ -1,5 +1,5 @@
 class WhoPercentileService
-  PERCENTILES = [3, 15, 50, 85, 97].freeze
+  PERCENTILES = [ 3, 15, 50, 85, 97 ].freeze
   Z_SCORES = { 3 => -1.881, 15 => -1.036, 50 => 0, 85 => 1.036, 97 => 1.881 }.freeze
 
   def initialize(gender = "male")
@@ -55,7 +55,7 @@ class WhoPercentileService
     {
       "L" => l1["L"] + ratio * (l2["L"] - l1["L"]),
       "M" => l1["M"] + ratio * (l2["M"] - l1["M"]),
-      "S" => l1["S"] + ratio * (l2["S"] - l1["S"]),
+      "S" => l1["S"] + ratio * (l2["S"] - l1["S"])
     }
   end
 

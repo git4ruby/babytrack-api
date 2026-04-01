@@ -16,6 +16,6 @@ class CreateVaccinations < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :vaccinations, [:baby_id, :status]
+    add_index :vaccinations, [ :baby_id, :status ]
   end
 end

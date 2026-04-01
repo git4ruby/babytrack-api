@@ -15,7 +15,7 @@ class GmailPollJob < ApplicationJob
     imap.select("INBOX")
 
     # Fetch unread messages
-    uids = imap.search(["NOT", "SEEN"])
+    uids = imap.search([ "NOT", "SEEN" ])
 
     uids.each do |uid|
       begin
@@ -41,10 +41,10 @@ class GmailPollJob < ApplicationJob
         end
 
         # Mark as read and delete from inbox (move to trash)
-        imap.store(uid, "+FLAGS", [:Seen, :Deleted])
+        imap.store(uid, "+FLAGS", [ :Seen, :Deleted ])
       rescue => e
         Rails.logger.error("Failed to process email UID #{uid}: #{e.message}")
-        imap.store(uid, "+FLAGS", [:Seen]) # Mark read anyway to avoid reprocessing
+        imap.store(uid, "+FLAGS", [ :Seen ]) # Mark read anyway to avoid reprocessing
       end
     end
 

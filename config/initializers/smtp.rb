@@ -7,7 +7,7 @@ if ENV["GMAIL_ADDRESS"].present? && ENV["GMAIL_APP_PASSWORD"].present?
     user_name: ENV["GMAIL_ADDRESS"],
     password: ENV["GMAIL_APP_PASSWORD"],
     authentication: "plain",
-    enable_starttls_auto: true,
+    enable_starttls_auto: true
   }
   Rails.application.config.action_mailer.default_options = {
     from: "BabyTrack <#{ENV['GMAIL_ADDRESS']}>"

@@ -14,7 +14,7 @@ class FeedingAnalyticsService
       feed_type_breakdown: feed_type_breakdown,
       breast_balance: breast_balance,
       daily_feed_counts: daily_feed_counts,
-      average_gap_by_day: average_gap_by_day,
+      average_gap_by_day: average_gap_by_day
     }
   end
 
@@ -51,7 +51,7 @@ class FeedingAnalyticsService
       left: left,
       right: right,
       left_percent: ((left.to_f / total) * 100).round(1),
-      right_percent: ((right.to_f / total) * 100).round(1),
+      right_percent: ((right.to_f / total) * 100).round(1)
     }
   end
 

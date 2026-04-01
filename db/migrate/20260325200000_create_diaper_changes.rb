@@ -13,7 +13,7 @@ class CreateDiaperChanges < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :diaper_changes, [:baby_id, :changed_at]
-    add_index :diaper_changes, [:baby_id, :diaper_type]
+    add_index :diaper_changes, [ :baby_id, :changed_at ]
+    add_index :diaper_changes, [ :baby_id, :diaper_type ]
   end
 end

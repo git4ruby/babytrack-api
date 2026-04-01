@@ -68,7 +68,7 @@ module Inbound
         baby: @baby,
         user: @user,
         feed_type: data["feed_type"],
-        started_at: started,
+        started_at: started
       }
 
       case data["feed_type"]

@@ -12,7 +12,7 @@ class CreateMilestones < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :milestones, [:baby_id, :achieved_on]
-    add_index :milestones, [:baby_id, :category]
+    add_index :milestones, [ :baby_id, :achieved_on ]
+    add_index :milestones, [ :baby_id, :category ]
   end
 end
