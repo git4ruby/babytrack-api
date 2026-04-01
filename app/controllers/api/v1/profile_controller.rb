@@ -7,7 +7,7 @@ class Api::V1::ProfileController < ApplicationController
         email: current_user.email,
         name: current_user.name,
         role: current_user.role,
-        phone_number: current_user.phone_number,
+        phone_number: current_user.phone_number
       }
     }
   end
@@ -20,7 +20,7 @@ class Api::V1::ProfileController < ApplicationController
           id: current_user.id,
           email: current_user.email,
           name: current_user.name,
-          phone_number: current_user.phone_number,
+          phone_number: current_user.phone_number
         }
       }
     else
@@ -31,17 +31,17 @@ class Api::V1::ProfileController < ApplicationController
   # PATCH /api/v1/profile/password
   def change_password
     unless current_user.valid_password?(params[:current_password])
-      render json: { errors: ["Current password is incorrect"] }, status: :unprocessable_entity
+      render json: { errors: [ "Current password is incorrect" ] }, status: :unprocessable_entity
       return
     end
 
     if params[:new_password] != params[:new_password_confirmation]
-      render json: { errors: ["New passwords don't match"] }, status: :unprocessable_entity
+      render json: { errors: [ "New passwords don't match" ] }, status: :unprocessable_entity
       return
     end
 
     if params[:new_password].length < 6
-      render json: { errors: ["New password must be at least 6 characters"] }, status: :unprocessable_entity
+      render json: { errors: [ "New password must be at least 6 characters" ] }, status: :unprocessable_entity
       return
     end
 
