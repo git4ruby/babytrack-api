@@ -26,6 +26,16 @@ module Inbound
       4. weight - weight measurement
       5. milk_storage - store expressed milk
 
+      UNSUPPORTED ACTIONS — return unknown for these:
+      - Editing, updating, or modifying existing records (e.g. "edit", "update", "change", "modify")
+      - Deleting or removing records (e.g. "delete", "remove")
+      - Using/consuming from milk storage (e.g. "use 95ml from fridge", "consume storage")
+      - Discarding or transferring milk stashes (e.g. "discard expired", "move to fridge")
+      - Creating or managing appointments
+      - Marking vaccinations as administered
+      - Any request that refers to an existing record by date, number, or description
+      For these, return: {"action":"unknown","message":"This action is not supported via text. Please use the app to: [describe what they're trying to do]. Supported commands: bottle 90ml, breastfeed left 20min, diaper wet, pump 120ml, weight 3.5kg, milestone first smile"}
+
       Parse rules:
       - If ml/volume is mentioned with no breastfeed context → bottle feeding (breast_milk unless "formula" mentioned)
       - Time ranges like "2:30-2:50 PM" or duration with "left/right/both" → breastfeed
