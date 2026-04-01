@@ -29,6 +29,7 @@ class MilkStash < ApplicationRecord
   validates :expires_at, presence: true
 
   before_validation :set_expiration, on: :create
+  before_save :recalculate_expiration_if_changed
 
   scope :in_stock, -> { available.where("remaining_ml > 0") }
   scope :in_fridge, -> { where(storage_type: "fridge") }
@@ -141,6 +142,13 @@ class MilkStash < ApplicationRecord
   def compute_expiration(type)
     hours = EXPIRATION_HOURS[type.to_s] || 96
     (stored_at || Time.current) + hours.hours
+  end
+
+  def recalculate_expiration_if_changed
+    return if new_record? # handled by set_expiration
+    if (storage_type_changed? || stored_at_changed?) && !expires_at_changed?
+      self.expires_at = compute_expiration(storage_type)
+    end
   end
 
   def validate_withdrawal!(volume)
