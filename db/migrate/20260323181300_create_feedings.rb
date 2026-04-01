@@ -18,7 +18,7 @@ class CreateFeedings < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :feedings, [:baby_id, :started_at]
+    add_index :feedings, [ :baby_id, :started_at ]
     add_index :feedings, :session_group
     add_index :feedings, :discarded_at
     add_index :feedings, :feed_type

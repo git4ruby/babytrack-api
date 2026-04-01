@@ -1,5 +1,5 @@
 class Api::V1::FeedingsController < ApplicationController
-  before_action :set_feeding, only: [:show, :update, :destroy]
+  before_action :set_feeding, only: [ :show, :update, :destroy ]
 
   # GET /api/v1/feedings
   def index

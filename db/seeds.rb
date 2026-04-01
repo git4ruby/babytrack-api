@@ -43,7 +43,7 @@ vaccinations = [
   { vaccine_name: "PCV15 — Dose 4", recommended_age_days: 395, description: "12-15 months" },
   { vaccine_name: "Hib — Booster", recommended_age_days: 395, description: "12-15 months" },
   { vaccine_name: "DTaP — Dose 4", recommended_age_days: 480, description: "15-18 months" },
-  { vaccine_name: "Hepatitis A — Dose 2", recommended_age_days: 548, description: "18 months (6 months after dose 1)" },
+  { vaccine_name: "Hepatitis A — Dose 2", recommended_age_days: 548, description: "18 months (6 months after dose 1)" }
 ]
 
 vaccinations.each do |vax|

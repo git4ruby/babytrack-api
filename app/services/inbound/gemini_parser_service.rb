@@ -76,7 +76,7 @@ module Inbound
       parse_response(response)
     rescue => e
       Rails.logger.error("Gemini parse error: #{e.message}")
-      [{ "action" => "unknown", "message" => "Failed to parse: #{e.message}" }]
+      [ { "action" => "unknown", "message" => "Failed to parse: #{e.message}" } ]
     end
 
     private
@@ -85,8 +85,8 @@ module Inbound
       api_key = ENV.fetch("GEMINI_API_KEY")
 
       body = {
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ parts: [{ text: "Current date: #{Date.current}. Year: #{Date.current.year}. Timezone: #{@timezone}. Parse this message:\n\n#{@message}" }] }],
+        system_instruction: { parts: [ { text: SYSTEM_PROMPT } ] },
+        contents: [ { parts: [ { text: "Current date: #{Date.current}. Year: #{Date.current.year}. Timezone: #{@timezone}. Parse this message:\n\n#{@message}" } ] } ],
         generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
       }
 
@@ -130,15 +130,15 @@ module Inbound
         end
       end
 
-      return [{ "action" => "unknown", "message" => "Empty AI response" }] unless text
+      return [ { "action" => "unknown", "message" => "Empty AI response" } ] unless text
 
       text = text.gsub(/```json\s*/i, "").gsub(/```\s*/, "").strip
 
       parsed = JSON.parse(text)
-      parsed.is_a?(Array) ? parsed : [parsed]
+      parsed.is_a?(Array) ? parsed : [ parsed ]
     rescue JSON::ParserError => e
       Rails.logger.error("Gemini JSON parse error: #{e.message} — raw: #{text&.truncate(300)}")
-      [{ "action" => "unknown", "message" => "Could not parse AI response" }]
+      [ { "action" => "unknown", "message" => "Could not parse AI response" } ]
     end
   end
 end

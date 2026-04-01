@@ -13,6 +13,6 @@ class CreateMilkStashLogs < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :milk_stash_logs, [:milk_stash_id, :action]
+    add_index :milk_stash_logs, [ :milk_stash_id, :action ]
   end
 end

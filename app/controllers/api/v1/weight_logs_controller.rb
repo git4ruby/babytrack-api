@@ -1,5 +1,5 @@
 class Api::V1::WeightLogsController < ApplicationController
-  before_action :set_weight_log, only: [:show, :update, :destroy]
+  before_action :set_weight_log, only: [ :show, :update, :destroy ]
 
   # GET /api/v1/weight_logs
   def index
@@ -46,7 +46,7 @@ class Api::V1::WeightLogsController < ApplicationController
   # GET /api/v1/weight_logs/percentiles
   def percentiles
     service = WhoPercentileService.new(current_baby.gender)
-    max_days = [current_baby.age_in_days + 30, 365].min
+    max_days = [ current_baby.age_in_days + 30, 365 ].min
     curves = service.weight_for_age_curves(max_days)
 
     logs = current_baby.weight_logs.chronological.map do |l|

@@ -61,11 +61,11 @@ module Inbound
     end
 
     def error_result(msg)
-      [{ success: false, message: msg }]
+      [ { success: false, message: msg } ]
     end
 
     def error_with_email(msg)
-      results = [{ success: false, message: msg }]
+      results = [ { success: false, message: msg } ]
       @baby = @user.babies.first # may be nil, that's ok for the mailer
       send_confirmation(results) if @baby
       results

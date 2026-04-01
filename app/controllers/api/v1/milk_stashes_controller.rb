@@ -1,5 +1,5 @@
 class Api::V1::MilkStashesController < ApplicationController
-  before_action :set_stash, only: [:show, :update, :consume, :discard, :transfer]
+  before_action :set_stash, only: [ :show, :update, :consume, :discard, :transfer ]
 
   # GET /api/v1/milk_stashes
   def index

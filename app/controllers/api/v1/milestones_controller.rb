@@ -1,5 +1,5 @@
 class Api::V1::MilestonesController < ApplicationController
-  before_action :set_milestone, only: [:show, :update, :destroy]
+  before_action :set_milestone, only: [ :show, :update, :destroy ]
 
   # GET /api/v1/milestones
   def index

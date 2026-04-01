@@ -17,8 +17,8 @@ class CreateMilkStashes < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :milk_stashes, [:baby_id, :status]
-    add_index :milk_stashes, [:baby_id, :storage_type]
+    add_index :milk_stashes, [ :baby_id, :status ]
+    add_index :milk_stashes, [ :baby_id, :storage_type ]
     add_index :milk_stashes, :expires_at
   end
 end

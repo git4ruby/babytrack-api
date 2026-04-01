@@ -21,7 +21,7 @@ Rails.application.routes.draw do
       post "sms/incoming", to: "sms#incoming"
 
       # User profile
-      resource :profile, only: [:show, :update], controller: "profile" do
+      resource :profile, only: [ :show, :update ], controller: "profile" do
         patch :change_password, on: :member
       end
 
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
       get "exports/all", to: "exports#all"
 
       # Feedings
-      resources :feedings, only: [:index, :show, :create, :update, :destroy] do
+      resources :feedings, only: [ :index, :show, :create, :update, :destroy ] do
         collection do
           get :summary
           get :analytics
@@ -42,14 +42,14 @@ Rails.application.routes.draw do
       end
 
       # Weight Logs
-      resources :weight_logs, only: [:index, :show, :create, :update, :destroy] do
+      resources :weight_logs, only: [ :index, :show, :create, :update, :destroy ] do
         collection do
           get :percentiles
         end
       end
 
       # Vaccinations
-      resources :vaccinations, only: [:index, :show, :update] do
+      resources :vaccinations, only: [ :index, :show, :update ] do
         member do
           post :administer
         end
@@ -59,14 +59,14 @@ Rails.application.routes.draw do
       end
 
       # Appointments
-      resources :appointments, only: [:index, :show, :create, :update, :destroy] do
+      resources :appointments, only: [ :index, :show, :create, :update, :destroy ] do
         collection do
           get :next_upcoming
         end
       end
 
       # Milk Storage Inventory
-      resources :milk_stashes, only: [:index, :show, :create, :update] do
+      resources :milk_stashes, only: [ :index, :show, :create, :update ] do
         member do
           post :consume
           post :discard
@@ -79,7 +79,7 @@ Rails.application.routes.draw do
       end
 
       # Diaper Changes
-      resources :diaper_changes, only: [:index, :show, :create, :update, :destroy] do
+      resources :diaper_changes, only: [ :index, :show, :create, :update, :destroy ] do
         collection do
           get :summary
           get :stats
@@ -87,11 +87,11 @@ Rails.application.routes.draw do
       end
 
       # Milestones
-      resources :milestones, only: [:index, :show, :create, :update, :destroy]
+      resources :milestones, only: [ :index, :show, :create, :update, :destroy ]
 
       # Baby info
-      resource :baby, only: [:show, :update]   # current baby
-      resources :babies, only: [:index, :create, :update, :destroy] # list + CRUD
+      resource :baby, only: [ :show, :update ]   # current baby
+      resources :babies, only: [ :index, :create, :update, :destroy ] # list + CRUD
     end
   end
 end
