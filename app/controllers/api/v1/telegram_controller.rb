@@ -26,8 +26,8 @@ class Api::V1::TelegramController < ApplicationController
       return head :ok
     end
 
-    # Find user by telegram_chat_id
-    user = User.find_by(telegram_chat_id: chat_id)
+    # Find user by telegram_chat_id (supports multiple comma-separated IDs)
+    user = User.where("telegram_chat_id LIKE ?", "%#{chat_id}%").first
 
     unless user
       send_telegram(chat_id, "Your Telegram is not linked to a LullaTrack account.\n\nTo link: go to Settings in the app, click 'Link Telegram', and follow the instructions.")
@@ -54,7 +54,12 @@ class Api::V1::TelegramController < ApplicationController
     if token.present? && token != "/start"
       user = User.find_by(telegram_link_token: token)
       if user
-        user.update!(telegram_chat_id: chat_id, telegram_link_token: nil)
+        # Append chat_id (supports multiple family members)
+        existing = user.telegram_chat_id.to_s.split(",").map(&:strip)
+        unless existing.include?(chat_id)
+          existing << chat_id
+        end
+        user.update!(telegram_chat_id: existing.join(","), telegram_link_token: nil)
         send_telegram(chat_id, "Linked to #{user.name}'s LullaTrack account!\n\nYou can now send messages to log feeds, diapers, and more.\n\nTry: bottle 90ml\n\nSend /help for all commands.")
         return
       end
