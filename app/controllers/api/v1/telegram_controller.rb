@@ -48,8 +48,9 @@ class Api::V1::TelegramController < ApplicationController
   private
 
   def handle_start(chat_id, text, username)
-    # /start link_TOKEN format
-    token = text.split(" ").last
+    # /start link_TOKEN format — strip the "link_" prefix
+    raw_token = text.split(" ").last
+    token = raw_token&.sub(/^link_/, "")
     if token.present? && token != "/start"
       user = User.find_by(telegram_link_token: token)
       if user
