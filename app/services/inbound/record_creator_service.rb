@@ -15,6 +15,7 @@ module Inbound
         when "milestone" then create_milestone(action)
         when "weight" then create_weight(action)
         when "milk_storage" then create_milk_storage(action)
+        when "sleep" then create_sleep(action)
         when "unknown" then { success: false, message: action["message"] }
         else { success: false, message: "Unknown action: #{action['action']}" }
         end
@@ -190,6 +191,26 @@ module Inbound
       { success: true, type: "milk_storage", message: "Stored #{data['volume_ml']}ml in #{data['storage_type']}", record: stash }
     rescue => e
       { success: false, type: "milk_storage", message: "Failed: #{e.message}" }
+    end
+
+    def create_sleep(data)
+      started = data["started_at"].present? ? parse_time(data["started_at"]) : nil
+      ended = data["ended_at"].present? ? parse_time(data["ended_at"]) : nil
+
+      log = SleepLog.create!(
+        baby: @baby,
+        user: @user,
+        started_at: started,
+        ended_at: ended,
+        sleep_type: data["sleep_type"] || "nap",
+        location: data["location"],
+        notes: data["notes"]
+      )
+
+      duration = log.duration_minutes ? "#{log.duration_minutes}min" : ""
+      { success: true, type: "sleep", message: "Sleep #{log.sleep_type} #{duration}".strip, record: log }
+    rescue => e
+      { success: false, type: "sleep", message: "Failed: #{e.message}" }
     end
   end
 end

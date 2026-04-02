@@ -7,6 +7,7 @@ class Baby < ApplicationRecord
   has_many :milk_stashes, dependent: :destroy
   has_many :diaper_changes, dependent: :destroy
   has_many :milestones, dependent: :destroy
+  has_many :sleep_logs, dependent: :destroy
 
   validates :name, presence: true
   validates :date_of_birth, presence: true

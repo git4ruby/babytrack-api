@@ -21,6 +21,10 @@ Rails.application.routes.draw do
       post "sms/incoming", to: "sms#incoming"
       post "telegram/webhook", to: "telegram#webhook"
 
+      # Password reset
+      post "password/forgot", to: "passwords#forgot"
+      post "password/reset", to: "passwords#reset"
+
       # User profile
       resource :profile, only: [ :show, :update ], controller: "profile" do
         patch :change_password, on: :member
@@ -91,6 +95,13 @@ Rails.application.routes.draw do
 
       # Milestones
       resources :milestones, only: [ :index, :show, :create, :update, :destroy ]
+
+      # Sleep Logs
+      resources :sleep_logs, only: [ :index, :show, :create, :update, :destroy ] do
+        collection do
+          get :summary
+        end
+      end
 
       # Baby info
       resource :baby, only: [ :show, :update ]   # current baby
