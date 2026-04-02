@@ -7,7 +7,8 @@ class Api::V1::ProfileController < ApplicationController
         email: current_user.email,
         name: current_user.name,
         role: current_user.role,
-        phone_number: current_user.phone_number
+        phone_number: current_user.phone_number,
+        sms_enabled: current_user.sms_enabled
       }
     }
   end
