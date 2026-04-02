@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_01_200000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_01_210100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -159,10 +159,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_200000) do
     t.datetime "updated_at", null: false
     t.string "phone_number"
     t.boolean "sms_enabled", default: false, null: false
+    t.string "telegram_chat_id"
+    t.string "telegram_link_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true, where: "(phone_number IS NOT NULL)"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["telegram_chat_id"], name: "index_users_on_telegram_chat_id", unique: true, where: "(telegram_chat_id IS NOT NULL)"
   end
 
   create_table "vaccinations", force: :cascade do |t|

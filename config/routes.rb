@@ -19,10 +19,13 @@ Rails.application.routes.draw do
     namespace :v1 do
       # Inbound SMS webhook
       post "sms/incoming", to: "sms#incoming"
+      post "telegram/webhook", to: "telegram#webhook"
 
       # User profile
       resource :profile, only: [ :show, :update ], controller: "profile" do
         patch :change_password, on: :member
+        post :telegram_link, on: :member
+        delete :telegram_unlink, on: :member
       end
 
       # CSV Exports
