@@ -101,6 +101,8 @@ module Inbound
     def create_diaper(data)
       has_time = data["changed_at"].present?
       changed = has_time ? parse_time(data["changed_at"]) : nil
+      # For count-based diapers, use date field to set created_at context
+      diaper_date = data["date"].present? ? Date.parse(data["date"]) : nil
 
       # Dedup: only when explicit time is given
       if has_time && @baby.diaper_changes.where(
@@ -110,10 +112,13 @@ module Inbound
         return { success: true, type: "diaper", message: "Diaper #{data['diaper_type']} (already exists, skipped)", skipped: true }
       end
 
+      # If no explicit time but has date, set to noon of that date for correct day grouping
+      effective_changed_at = changed || (diaper_date ? Time.zone.parse(diaper_date.to_s + " 12:00:00") : nil)
+
       change = DiaperChange.create!(
         baby: @baby,
         user: @user,
-        changed_at: changed,
+        changed_at: effective_changed_at,
         diaper_type: data["diaper_type"] || "wet",
         stool_color: data["stool_color"],
         consistency: data["consistency"],
@@ -169,14 +174,15 @@ module Inbound
     end
 
     def create_milk_storage(data)
+      stored = data["stored_at"].present? ? parse_time(data["stored_at"]) : Time.current
       stash = MilkStash.create!(
         baby: @baby,
         user: @user,
         volume_ml: data["volume_ml"],
         remaining_ml: data["volume_ml"],
         storage_type: data["storage_type"] || "fridge",
-        stored_at: Time.current,
-        label: data["label"] || "#{Time.current.strftime('%b %d %I:%M %p')} pump",
+        stored_at: stored,
+        label: data["label"] || "#{stored.in_time_zone('America/New_York').strftime('%b %d %I:%M %p')} pump",
         notes: data["notes"]
       )
       { success: true, type: "milk_storage", message: "Stored #{data['volume_ml']}ml in #{data['storage_type']}", record: stash }

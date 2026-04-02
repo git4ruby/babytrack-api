@@ -61,7 +61,8 @@ module Inbound
       {"action":"feeding","feed_type":"pump","volume_ml":120,"started_at":"2026-03-26T15:00:00","notes":null}
 
       Diaper:
-      {"action":"diaper","diaper_type":"wet","stool_color":null,"consistency":null,"has_rash":false,"changed_at":"2026-03-26T14:00:00","notes":null}
+      {"action":"diaper","diaper_type":"wet","stool_color":null,"consistency":null,"has_rash":false,"changed_at":"2026-03-26T14:00:00","date":"2026-03-26","notes":null}
+      For diaper counts without time (e.g. "Wet - 3"), set changed_at to null but ALWAYS set "date" to the date from the message header (e.g. "4/1" = "2026-04-01"). If no date header, use current date.
 
       Milestone:
       {"action":"milestone","title":"First smile","description":null,"category":"social","achieved_on":"2026-03-26","notes":null}
@@ -70,7 +71,8 @@ module Inbound
       {"action":"weight","weight_grams":3500,"height_cm":null,"head_circumference_cm":null,"measured_by":null,"notes":null}
 
       Milk storage:
-      {"action":"milk_storage","volume_ml":120,"storage_type":"fridge","label":null,"notes":null}
+      {"action":"milk_storage","volume_ml":120,"storage_type":"fridge","stored_at":"2026-04-01T23:30:00","label":null,"notes":null}
+      IMPORTANT: Always include stored_at with full datetime from the message. Use the date header context.
 
       If the message contains multiple entries, return a JSON array of ALL actions.
       If you cannot parse the message, return: {"action":"unknown","message":"Could not understand. Try: bottle 90ml, diaper wet, pump 120ml"}
