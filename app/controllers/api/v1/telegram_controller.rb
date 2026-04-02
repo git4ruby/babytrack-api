@@ -9,6 +9,7 @@ class Api::V1::TelegramController < ApplicationController
     chat_id = message.dig("chat", "id")&.to_s
     text = message.dig("text")&.strip
     username = message.dig("from", "username")
+    first_name = message.dig("from", "first_name")
 
     Rails.logger.info("Telegram from chat #{chat_id} (@#{username}): #{text&.truncate(100)}")
 
@@ -16,7 +17,7 @@ class Api::V1::TelegramController < ApplicationController
 
     # Handle /start command — link account
     if text.start_with?("/start")
-      handle_start(chat_id, text, username)
+      handle_start(chat_id, text, username, first_name)
       return head :ok
     end
 
@@ -48,16 +49,17 @@ class Api::V1::TelegramController < ApplicationController
 
   private
 
-  def handle_start(chat_id, text, username)
+  def handle_start(chat_id, text, username, first_name)
     # /start link_TOKEN format — strip the "link_" prefix
     raw_token = text.split(" ").last
     token = raw_token&.sub(/^link_/, "")
     if token.present? && token != "/start"
       user = User.find_by(telegram_link_token: token)
       if user
-        # Append chat_id|username (supports multiple family members)
+        # Append chat_id|label (supports multiple family members)
         existing = user.telegram_chat_id.to_s.split(",").map(&:strip)
-        entry = username.present? ? "#{chat_id}|@#{username}" : chat_id
+        label = username.present? ? "@#{username}" : first_name || "User"
+        entry = "#{chat_id}|#{label}"
         unless existing.any? { |e| e.start_with?(chat_id) }
           existing << entry
         end
