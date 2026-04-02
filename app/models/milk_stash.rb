@@ -42,7 +42,7 @@ class MilkStash < ApplicationRecord
 
   # CDC-recommended storage durations
   EXPIRATION_HOURS = {
-    "room_temp" => 4,    # Up to 4 hours at room temp (77°F / 25°C)
+    "room_temp" => 8,    # Up to 8 hours at room temp
     "fridge"    => 96,   # Up to 4 days in fridge (40°F / 4°C)
     "freezer"   => 4320  # Up to 6 months in freezer (0°F / -18°C) — using 180 days
   }.freeze
