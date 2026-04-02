@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_01_210100) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_02_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -146,6 +146,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_210100) do
     t.index ["user_id"], name: "index_milk_stashes_on_user_id"
   end
 
+  create_table "sleep_logs", force: :cascade do |t|
+    t.bigint "baby_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer "duration_minutes"
+    t.string "sleep_type", default: "nap", null: false
+    t.string "location"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["baby_id", "started_at"], name: "index_sleep_logs_on_baby_id_and_started_at"
+    t.index ["baby_id"], name: "index_sleep_logs_on_baby_id"
+    t.index ["user_id"], name: "index_sleep_logs_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -216,6 +232,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_210100) do
   add_foreign_key "milk_stash_logs", "users"
   add_foreign_key "milk_stashes", "babies"
   add_foreign_key "milk_stashes", "users"
+  add_foreign_key "sleep_logs", "babies"
+  add_foreign_key "sleep_logs", "users"
   add_foreign_key "vaccinations", "babies"
   add_foreign_key "weight_logs", "babies"
   add_foreign_key "weight_logs", "users"

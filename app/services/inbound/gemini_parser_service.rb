@@ -25,6 +25,7 @@ module Inbound
       3. milestone - a developmental milestone
       4. weight - weight measurement
       5. milk_storage - store expressed milk
+      6. sleep - baby sleep/nap tracking
 
       UNSUPPORTED ACTIONS — return unknown for these:
       - Editing, updating, or modifying existing records (e.g. "edit", "update", "change", "modify")
@@ -48,6 +49,9 @@ module Inbound
       - "stored", "fridge", "freezer", "room temp" → milk_storage
       - "30 (expressed milk) & 65 (formula)" → two bottle feedings: one breast_milk 30ml, one formula 65ml, same started_at
       - "30 ml + 65 formula" → same as above, two separate bottle entries
+      - "slept", "nap", "sleep", "woke up" → sleep log
+      - "nap 2:00-3:30" or "slept 9pm-6am" → sleep with start/end times
+      - "nap 45min" → sleep with duration only
 
       JSON response formats (ALL times must be full YYYY-MM-DDTHH:MM:SS):
 
@@ -74,8 +78,12 @@ module Inbound
       {"action":"milk_storage","volume_ml":120,"storage_type":"fridge","stored_at":"2026-04-01T23:30:00","label":null,"notes":null}
       IMPORTANT: Always include stored_at with full datetime from the message. Use the date header context.
 
+      Sleep:
+      {"action":"sleep","sleep_type":"nap","started_at":"2026-04-01T14:00:00","ended_at":"2026-04-01T15:30:00","location":null,"notes":null}
+      sleep_type: "nap" for daytime, "night" for overnight sleep. location: crib, bassinet, stroller, car, arms, other.
+
       If the message contains multiple entries, return a JSON array of ALL actions.
-      If you cannot parse the message, return: {"action":"unknown","message":"Could not understand. Try: bottle 90ml, diaper wet, pump 120ml"}
+      If you cannot parse the message, return: {"action":"unknown","message":"Could not understand. Try: bottle 90ml, diaper wet, nap 2-3pm, pump 120ml"}
     PROMPT
 
     def initialize(message_text, timezone: "America/New_York")
