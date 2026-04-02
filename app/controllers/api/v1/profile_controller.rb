@@ -7,7 +7,9 @@ class Api::V1::ProfileController < ApplicationController
         email: current_user.email,
         name: current_user.name,
         role: current_user.role,
-        phone_number: current_user.phone_number
+        phone_number: current_user.phone_number,
+        sms_enabled: current_user.sms_enabled,
+        telegram_linked: current_user.telegram_chat_id.present?
       }
     }
   end
@@ -51,6 +53,21 @@ class Api::V1::ProfileController < ApplicationController
     else
       render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  # POST /api/v1/profile/telegram_link
+  def telegram_link
+    token = SecureRandom.hex(16)
+    current_user.update!(telegram_link_token: token)
+    bot_username = "LullaTrackBot"
+    link = "https://t.me/#{bot_username}?start=link_#{token}"
+    render json: { data: { link: link, token: token } }
+  end
+
+  # DELETE /api/v1/profile/telegram_unlink
+  def telegram_unlink
+    current_user.update!(telegram_chat_id: nil, telegram_link_token: nil)
+    render json: { message: "Telegram unlinked" }
   end
 
   private

@@ -17,6 +17,12 @@ class Api::V1::SmsController < ApplicationController
       return
     end
 
+    unless user.sms_enabled?
+      Rails.logger.warn("SMS from user #{user.id} but SMS not enabled")
+      render xml: twiml_response
+      return
+    end
+
     # Process asynchronously
     InboundMessageJob.perform_later(
       user_id: user.id,
