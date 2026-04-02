@@ -29,9 +29,9 @@ RSpec.describe MilkStash, type: :model do
       expect(stash.expires_at).to be_within(1.minute).of(Time.current + 4320.hours)
     end
 
-    it "sets room temp expiration to 4 hours" do
+    it "sets room temp expiration to 8 hours" do
       stash = create(:milk_stash, :at_room_temp, baby: baby, user: user, stored_at: Time.current, expires_at: nil)
-      expect(stash.expires_at).to be_within(1.minute).of(Time.current + 4.hours)
+      expect(stash.expires_at).to be_within(1.minute).of(Time.current + 8.hours)
     end
 
     it "sets remaining_ml to volume_ml on create" do

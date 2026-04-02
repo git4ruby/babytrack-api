@@ -9,7 +9,8 @@ class Api::V1::ProfileController < ApplicationController
         role: current_user.role,
         phone_number: current_user.phone_number,
         sms_enabled: current_user.sms_enabled,
-        telegram_linked: current_user.telegram_chat_id.present?
+        telegram_linked: current_user.telegram_chat_id.present?,
+        telegram_accounts: parse_telegram_accounts(current_user.telegram_chat_id)
       }
     }
   end
@@ -66,11 +67,26 @@ class Api::V1::ProfileController < ApplicationController
 
   # DELETE /api/v1/profile/telegram_unlink
   def telegram_unlink
-    current_user.update!(telegram_chat_id: nil, telegram_link_token: nil)
+    if params[:chat_id].present?
+      # Unlink specific account
+      accounts = current_user.telegram_chat_id.to_s.split(",").map(&:strip)
+      accounts.reject! { |a| a.start_with?(params[:chat_id]) }
+      current_user.update!(telegram_chat_id: accounts.any? ? accounts.join(",") : nil)
+    else
+      current_user.update!(telegram_chat_id: nil, telegram_link_token: nil)
+    end
     render json: { message: "Telegram unlinked" }
   end
 
   private
+
+  def parse_telegram_accounts(raw)
+    return [] unless raw.present?
+    raw.split(",").map(&:strip).map do |entry|
+      parts = entry.split("|")
+      { chat_id: parts[0], label: parts[1] || "Unknown" }
+    end
+  end
 
   def profile_params
     params.require(:user).permit(:name, :phone_number)

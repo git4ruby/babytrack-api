@@ -1,13 +1,14 @@
 class InboundMessageJob < ApplicationJob
   queue_as :default
 
-  def perform(user_id:, message:, source: "sms")
+  def perform(user_id:, message:, source: "sms", reply_chat_id: nil)
     user = User.find(user_id)
 
     results = Inbound::MessageProcessorService.new(
       user: user,
       message_text: message,
-      source: source
+      source: source,
+      reply_chat_id: reply_chat_id
     ).process
 
     results.each do |r|

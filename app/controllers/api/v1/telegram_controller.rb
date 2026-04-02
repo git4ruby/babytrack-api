@@ -38,7 +38,8 @@ class Api::V1::TelegramController < ApplicationController
     InboundMessageJob.perform_later(
       user_id: user.id,
       message: text,
-      source: "telegram"
+      source: "telegram",
+      reply_chat_id: chat_id
     )
 
     send_telegram(chat_id, "Got it! Processing...")
@@ -54,10 +55,11 @@ class Api::V1::TelegramController < ApplicationController
     if token.present? && token != "/start"
       user = User.find_by(telegram_link_token: token)
       if user
-        # Append chat_id (supports multiple family members)
+        # Append chat_id|username (supports multiple family members)
         existing = user.telegram_chat_id.to_s.split(",").map(&:strip)
-        unless existing.include?(chat_id)
-          existing << chat_id
+        entry = username.present? ? "#{chat_id}|@#{username}" : chat_id
+        unless existing.any? { |e| e.start_with?(chat_id) }
+          existing << entry
         end
         user.update!(telegram_chat_id: existing.join(","), telegram_link_token: nil)
         send_telegram(chat_id, "Linked to #{user.name}'s LullaTrack account!\n\nYou can now send messages to log feeds, diapers, and more.\n\nTry: bottle 90ml\n\nSend /help for all commands.")

@@ -62,7 +62,7 @@ RSpec.describe "Api::V1::MilkStashes", type: :request do
       expect(data["hours_until_expiry"]).to be > 90 # ~96 hours
     end
 
-    it "creates a room temp stash with 4-hour expiration" do
+    it "creates a room temp stash with 8-hour expiration" do
       params = {
         milk_stash: {
           volume_ml: 80,
@@ -76,7 +76,7 @@ RSpec.describe "Api::V1::MilkStashes", type: :request do
       expect(response).to have_http_status(:created)
       data = json_body["data"]
       expect(data["storage_type"]).to eq("room_temp")
-      expect(data["hours_until_expiry"]).to be_between(3.5, 4.1)
+      expect(data["hours_until_expiry"]).to be_between(7.5, 8.1)
     end
 
     it "creates a freezer stash" do

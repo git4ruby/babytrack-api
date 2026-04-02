@@ -1,9 +1,10 @@
 module Inbound
   class MessageProcessorService
-    def initialize(user:, message_text:, source: "sms")
+    def initialize(user:, message_text:, source: "sms", reply_chat_id: nil)
       @user = user
       @message = message_text.strip
       @source = source
+      @reply_chat_id = reply_chat_id
     end
 
     def process
@@ -28,8 +29,12 @@ module Inbound
         results.unshift({ success: true, message: "Recording for: #{@baby.name}", skipped: true, type: "info" })
       end
 
-      # Send email confirmation
-      send_confirmation(results)
+      # Send confirmation via the same channel
+      if @source == "telegram"
+        send_telegram_reply(results)
+      else
+        send_email_confirmation(results)
+      end
 
       results
     end
@@ -66,12 +71,18 @@ module Inbound
 
     def error_with_email(msg)
       results = [ { success: false, message: msg } ]
-      @baby = @user.babies.first # may be nil, that's ok for the mailer
-      send_confirmation(results) if @baby
+      @baby = @user.babies.first
+      if @baby
+        if @source == "telegram"
+          send_telegram_reply(results)
+        else
+          send_email_confirmation(results)
+        end
+      end
       results
     end
 
-    def send_confirmation(results)
+    def send_email_confirmation(results)
       InboundConfirmationMailer.log_confirmation(
         user: @user,
         baby: @baby,
@@ -81,6 +92,22 @@ module Inbound
       ).deliver_later
     rescue => e
       Rails.logger.error("Failed to send confirmation email: #{e.message}")
+    end
+
+    def send_telegram_reply(results)
+      token = ENV["TELEGRAM_BOT_TOKEN"]
+      return unless token
+
+      chat_id = @reply_chat_id || @user.telegram_chat_id&.split(",")&.first&.split("|")&.first
+      return unless chat_id
+
+      lines = results.map { |r| "#{r[:success] ? '✅' : '❌'} #{r[:message]}" }
+      text = "#{@baby.name}:\n#{lines.join("\n")}"
+
+      uri = URI("https://api.telegram.org/bot#{token}/sendMessage")
+      Net::HTTP.post_form(uri, { chat_id: chat_id, text: text })
+    rescue => e
+      Rails.logger.error("Failed to send Telegram reply: #{e.message}")
     end
   end
 end
