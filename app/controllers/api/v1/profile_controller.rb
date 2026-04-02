@@ -10,7 +10,8 @@ class Api::V1::ProfileController < ApplicationController
         phone_number: current_user.phone_number,
         sms_enabled: current_user.sms_enabled,
         telegram_linked: current_user.telegram_chat_id.present?,
-        telegram_accounts: parse_telegram_accounts(current_user.telegram_chat_id)
+        telegram_accounts: parse_telegram_accounts(current_user.telegram_chat_id),
+        email_verified: current_user.email_verified
       }
     }
   end
