@@ -1,7 +1,7 @@
 class Api::V1::BabiesController < ApplicationController
   # GET /api/v1/babies
   def index
-    babies = current_user.babies.order(:created_at)
+    babies = accessible_babies.order(:created_at)
     render json: {
       data: babies.map { |b| baby_json(b) }
     }

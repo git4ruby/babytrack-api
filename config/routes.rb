@@ -25,6 +25,23 @@ Rails.application.routes.draw do
       post "password/forgot", to: "passwords#forgot"
       post "password/reset", to: "passwords#reset"
 
+      # Email verification
+      post "email/send_verification", to: "email_verification#send_verification"
+      get "email/verify", to: "email_verification#verify"
+
+      # Admin
+      get "admin/users", to: "admin#users"
+      patch "admin/users/:id", to: "admin#update_user"
+      delete "admin/users/:id", to: "admin#destroy_user"
+      get "admin/stats", to: "admin#stats"
+
+      # Baby sharing
+      resources :baby_shares, only: [ :index, :create, :destroy ] do
+        collection do
+          post :accept
+        end
+      end
+
       # User profile
       resource :profile, only: [ :show, :update ], controller: "profile" do
         patch :change_password, on: :member

@@ -6,6 +6,8 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   has_many :babies
+  has_many :baby_shares
+  has_many :shared_babies, through: :baby_shares, source: :baby
 
   validates :name, presence: true
   validates :role, inclusion: { in: %w[parent caregiver] }
