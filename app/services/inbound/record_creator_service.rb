@@ -112,19 +112,21 @@ module Inbound
         return { success: true, type: "diaper", message: "Diaper #{data['diaper_type']} (already exists, skipped)", skipped: true }
       end
 
-      # If no explicit time but has date, set to noon of that date for correct day grouping
-      effective_changed_at = changed || (diaper_date ? Time.zone.parse(diaper_date.to_s + " 12:00:00") : nil)
-
       change = DiaperChange.create!(
         baby: @baby,
         user: @user,
-        changed_at: effective_changed_at,
+        changed_at: changed,
         diaper_type: data["diaper_type"] || "wet",
         stool_color: data["stool_color"],
         consistency: data["consistency"],
         has_rash: data["has_rash"] || false,
         notes: data["notes"]
       )
+
+      # If no explicit time but has date, set created_at to noon of that date for correct day grouping
+      if !has_time && diaper_date
+        change.update_columns(created_at: Time.zone.parse(diaper_date.to_s + " 12:00:00"))
+      end
 
       type_label = { "wet" => "Wet (pee)", "soiled" => "Soiled (poop)", "both" => "Wet + Soiled", "dry" => "Dry" }
       { success: true, type: "diaper", message: "Diaper #{type_label[data['diaper_type']] || data['diaper_type']}", record: change }
