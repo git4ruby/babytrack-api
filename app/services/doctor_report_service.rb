@@ -56,7 +56,7 @@ class DoctorReportService
     period_str = "#{@start_date.strftime('%b %d, %Y')} - #{@end_date.strftime('%b %d, %Y')}"
 
     data = [
-      [ "Name", @baby.name ],
+      [ "Name", sanitize_text(@baby.name) ],
       [ "Date of Birth", @baby.date_of_birth.strftime("%B %d, %Y") ],
       [ "Age", age_str ],
       [ "Gender", gender_str ],
@@ -240,7 +240,7 @@ class DoctorReportService
     milestones.each do |m|
       rows << [
         m.achieved_on.strftime("%b %d, %Y"),
-        m.title,
+        sanitize_text(m.title),
         m.category&.capitalize || "N/A"
       ]
     end
@@ -275,7 +275,7 @@ class DoctorReportService
       rows = [ [ "Vaccine", "Date" ] ]
       administered.each do |v|
         rows << [
-          v.vaccine_name,
+          sanitize_text(v.vaccine_name),
           v.administered_at&.strftime("%b %d, %Y") || "N/A"
         ]
       end
@@ -297,7 +297,7 @@ class DoctorReportService
       upcoming.each do |v|
         status = v.overdue? ? "OVERDUE" : "Pending"
         rows << [
-          v.vaccine_name,
+          sanitize_text(v.vaccine_name),
           v.recommended_date&.strftime("%b %d, %Y") || "N/A",
           status
         ]
@@ -331,9 +331,9 @@ class DoctorReportService
     appointments.each do |a|
       rows << [
         a.scheduled_at.strftime("%b %d, %Y %I:%M %p"),
-        a.title,
-        a.provider_name || "N/A",
-        a.location || "N/A"
+        sanitize_text(a.title),
+        sanitize_text(a.provider_name) || "N/A",
+        sanitize_text(a.location) || "N/A"
       ]
     end
 
@@ -394,6 +394,11 @@ class DoctorReportService
     hours = total_minutes / 60
     mins = total_minutes % 60
     "#{hours}h #{mins}m"
+  end
+
+  def sanitize_text(str)
+    return "" if str.blank?
+    str.to_s.encode("Windows-1252", undef: :replace, invalid: :replace, replace: "")
   end
 
   def weight_percentile(weight_log)
