@@ -26,6 +26,7 @@ module Inbound
       4. weight - weight measurement
       5. milk_storage - store expressed milk
       6. sleep - baby sleep/nap tracking
+      7. diary - a diary/journal entry about the baby
 
       UNSUPPORTED ACTIONS — return unknown for these:
       - Editing, updating, or modifying existing records (e.g. "edit", "update", "change", "modify")
@@ -52,6 +53,8 @@ module Inbound
       - "slept", "nap", "sleep", "woke up" → sleep log
       - "nap 2:00-3:30" or "slept 9pm-6am" → sleep with start/end times
       - "nap 45min" → sleep with duration only
+      - "diary", "journal", "dear diary", "note about", "today was", personal reflections about the baby → diary entry
+      - Mood detection: "happy", "funny", "sweet", "proud", "sad", or "neutral" based on tone
 
       JSON response formats (ALL times must be full YYYY-MM-DDTHH:MM:SS):
 
@@ -81,6 +84,10 @@ module Inbound
       Sleep:
       {"action":"sleep","sleep_type":"nap","started_at":"2026-04-01T14:00:00","ended_at":"2026-04-01T15:30:00","location":null,"notes":null}
       sleep_type: "nap" for daytime, "night" for overnight sleep. location: crib, bassinet, stroller, car, arms, other.
+
+      Diary:
+      {"action":"diary","content":"Today baby laughed for the first time when daddy made funny faces!","mood":"funny","entry_date":"2026-04-01"}
+      mood must be one of: happy, funny, sweet, proud, sad, neutral. Infer mood from the tone of the message.
 
       If the message contains multiple entries, return a JSON array of ALL actions.
       If you cannot parse the message, return: {"action":"unknown","message":"Could not understand. Try: bottle 90ml, diaper wet, nap 2-3pm, pump 120ml"}

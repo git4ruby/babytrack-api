@@ -16,6 +16,7 @@ module Inbound
         when "weight" then create_weight(action)
         when "milk_storage" then create_milk_storage(action)
         when "sleep" then create_sleep(action)
+        when "diary" then create_diary(action)
         when "unknown" then { success: false, message: action["message"] }
         else { success: false, message: "Unknown action: #{action['action']}" }
         end
@@ -191,6 +192,26 @@ module Inbound
       { success: true, type: "milk_storage", message: "Stored #{data['volume_ml']}ml in #{data['storage_type']}", record: stash }
     rescue => e
       { success: false, type: "milk_storage", message: "Failed: #{e.message}" }
+    end
+
+    def create_diary(data)
+      entry_date = parse_date(data["entry_date"])
+
+      # Dedup: same content on same date
+      if @baby.diary_entries.where(content: data["content"], entry_date: entry_date).exists?
+        return { success: true, type: "diary", message: "Diary entry (already exists, skipped)", skipped: true }
+      end
+
+      diary_entry = DiaryEntry.create!(
+        baby: @baby,
+        user: @user,
+        content: data["content"],
+        entry_date: entry_date,
+        mood: data["mood"] || "neutral"
+      )
+      { success: true, type: "diary", message: "Diary: #{data['content'].truncate(50)}", record: diary_entry }
+    rescue => e
+      { success: false, type: "diary", message: "Failed: #{e.message}" }
     end
 
     def create_sleep(data)

@@ -116,6 +116,9 @@ Rails.application.routes.draw do
       # Milestones
       resources :milestones, only: [ :index, :show, :create, :update, :destroy ]
 
+      # Diary Entries
+      resources :diary_entries, only: [ :index, :show, :create, :update, :destroy ]
+
       # File uploads
       post "uploads", to: "uploads#create"
 
