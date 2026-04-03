@@ -22,6 +22,12 @@ if defined?(Sidekiq)
           "class" => "VaccinationAlertJob",
           "queue" => "default",
           "description" => "Daily check for vaccines due within 7 days"
+        },
+        "weekly_digest" => {
+          "cron" => "0 8 * * 1 America/New_York",
+          "class" => "WeeklyDigestJob",
+          "queue" => "default",
+          "description" => "Send weekly digest email every Monday at 8am ET"
         }
       }
 
