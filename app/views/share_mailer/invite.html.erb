@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f1f5f9; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #3b82f6, #6366f1); padding: 32px 32px 24px; text-align: center;">
+              <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: white; line-height: 48px; margin-bottom: 12px;">B</div>
+              <h1 style="color: white; font-size: 20px; font-weight: 800; margin: 0;">You're Invited!</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding: 32px;">
+              <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
+                <strong><%= @inviter.name %></strong> has invited you to help track <strong><%= @baby.name %></strong> on LullaTrack.
+              </p>
+
+              <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0 0 24px;">
+                Once you accept, you'll be able to log feedings, diapers, sleep, weight, and more — right from the app, Telegram, or email.
+              </p>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 8px 0 24px;">
+                    <a href="<%= @accept_url %>" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 12px;">
+                      Accept Invite
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #9ca3af; font-size: 12px; line-height: 1.5; margin: 0;">
+                If you don't have a LullaTrack account yet, you'll be asked to sign up first. It's free!
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 32px; background-color: #f9fafb; border-top: 1px solid #f3f4f6; text-align: center;">
+              <p style="color: #9ca3af; font-size: 11px; margin: 0;">
+                LullaTrack — Simple tracking for your little one
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
