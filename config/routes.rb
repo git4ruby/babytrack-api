@@ -49,6 +49,9 @@ Rails.application.routes.draw do
         delete :telegram_unlink, on: :member
       end
 
+      # Reports
+      get "reports/doctor_visit", to: "reports#doctor_visit"
+
       # CSV Exports
       get "exports/feedings", to: "exports#feedings"
       get "exports/diapers", to: "exports#diapers"
@@ -112,6 +115,9 @@ Rails.application.routes.draw do
 
       # Milestones
       resources :milestones, only: [ :index, :show, :create, :update, :destroy ]
+
+      # File uploads
+      post "uploads", to: "uploads#create"
 
       # Sleep Logs
       resources :sleep_logs, only: [ :index, :show, :create, :update, :destroy ] do

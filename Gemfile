@@ -19,6 +19,7 @@ gem "connection_pool", "~> 2.4"
 # API
 gem "rack-cors"
 gem "kaminari"
+gem "rack-attack"
 
 # Twilio SMS
 gem "twilio-ruby", "~> 7.0"
@@ -29,6 +30,15 @@ gem "mail"
 
 # Soft delete
 gem "discard", "~> 1.3"
+
+# PDF generation
+gem "prawn", "~> 2.5"
+gem "prawn-table", "~> 0.2"
+
+# Error tracking
+gem "sentry-ruby", "~> 5.22"
+gem "sentry-rails", "~> 5.22"
+gem "sentry-sidekiq", "~> 5.22"
 
 # Environment variables
 gem "dotenv-rails"

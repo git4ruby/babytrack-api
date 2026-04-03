@@ -50,7 +50,7 @@ class Api::V1::MilestonesController < ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :achieved_on, :category, :notes)
+    params.require(:milestone).permit(:title, :description, :achieved_on, :category, :notes, :photo_url)
   end
 
   def milestone_json(m)
@@ -62,6 +62,7 @@ class Api::V1::MilestonesController < ApplicationController
       category: m.category,
       age_days: m.age_at_milestone,
       notes: m.notes,
+      photo_url: m.photo_url,
       created_at: m.created_at,
       user: { id: m.user.id, name: m.user.name }
     }
