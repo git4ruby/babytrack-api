@@ -245,7 +245,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.5)
+    rack (3.2.6)
     rack-attack (6.8.0)
       rack (>= 1.0, < 4)
     rack-cors (3.0.0)
@@ -368,13 +368,11 @@ GEM
       logger
       rack (>= 2.2.4)
       redis-client (>= 0.22.2)
-    sidekiq-scheduler (5.0.6)
+    sidekiq-scheduler (6.0.1)
       rufus-scheduler (~> 3.2)
-      sidekiq (>= 6, < 8)
-      tilt (>= 1.4.0, < 3)
+      sidekiq (>= 7.3, < 9)
     stringio (3.2.0)
     thor (1.5.0)
-    tilt (2.7.0)
     timeout (0.6.1)
     tsort (0.2.0)
     ttfunk (1.8.0)
@@ -445,7 +443,7 @@ DEPENDENCIES
   sentry-sidekiq (~> 5.22)
   shoulda-matchers
   sidekiq (~> 7.3)
-  sidekiq-scheduler (~> 5.0)
+  sidekiq-scheduler (~> 6.0)
   twilio-ruby (~> 7.0)
   tzinfo-data
 
