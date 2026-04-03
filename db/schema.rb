@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_02_110100) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_03_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_110100) do
 
   create_table "baby_shares", force: :cascade do |t|
     t.bigint "baby_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.string "role", default: "caregiver", null: false
     t.string "invite_token"
     t.string "invite_email"
