@@ -11,7 +11,7 @@ class DoctorReportService
   end
 
   def generate
-    pdf = Prawn::Document.new(page_size: "LETTER", margin: [40, 40, 50, 40])
+    pdf = Prawn::Document.new(page_size: "LETTER", margin: [ 40, 40, 50, 40 ])
     register_fonts(pdf)
 
     render_header(pdf)
@@ -56,14 +56,14 @@ class DoctorReportService
     period_str = "#{@start_date.strftime('%b %d, %Y')} - #{@end_date.strftime('%b %d, %Y')}"
 
     data = [
-      ["Name", @baby.name],
-      ["Date of Birth", @baby.date_of_birth.strftime("%B %d, %Y")],
-      ["Age", age_str],
-      ["Gender", gender_str],
-      ["Report Period", period_str]
+      [ "Name", @baby.name ],
+      [ "Date of Birth", @baby.date_of_birth.strftime("%B %d, %Y") ],
+      [ "Age", age_str ],
+      [ "Gender", gender_str ],
+      [ "Report Period", period_str ]
     ]
 
-    pdf.table(data, width: pdf.bounds.width, cell_style: { borders: [], padding: [4, 8] }) do |t|
+    pdf.table(data, width: pdf.bounds.width, cell_style: { borders: [], padding: [ 4, 8 ] }) do |t|
       t.columns(0).font_style = :bold
       t.columns(0).width = 120
     end
@@ -82,7 +82,7 @@ class DoctorReportService
       return
     end
 
-    rows = [["Measurement", "Value", "WHO Percentile"]]
+    rows = [ [ "Measurement", "Value", "WHO Percentile" ] ]
 
     if latest.weight_grams.present?
       percentile = weight_percentile(latest)
@@ -94,19 +94,19 @@ class DoctorReportService
     end
 
     if latest.height_cm.present?
-      rows << ["Height", "#{latest.height_cm} cm", "N/A"]
+      rows << [ "Height", "#{latest.height_cm} cm", "N/A" ]
     end
 
     if latest.head_circumference_cm.present?
-      rows << ["Head Circumference", "#{latest.head_circumference_cm} cm", "N/A"]
+      rows << [ "Head Circumference", "#{latest.head_circumference_cm} cm", "N/A" ]
     end
 
-    rows << ["Recorded On", latest.recorded_at.strftime("%b %d, %Y"), ""]
+    rows << [ "Recorded On", latest.recorded_at.strftime("%b %d, %Y"), "" ]
 
-    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [5, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [ 5, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12
@@ -125,26 +125,26 @@ class DoctorReportService
       return
     end
 
-    num_days = [(@end_date.to_date - @start_date.to_date).to_i, 1].max
+    num_days = [ (@end_date.to_date - @start_date.to_date).to_i, 1 ].max
     total_feeds = feedings.count
     total_volume = feedings.where.not(volume_ml: nil).sum(:volume_ml)
     avg_daily = (total_feeds.to_f / num_days).round(1)
 
-    rows = [["Metric", "Value"]]
-    rows << ["Total Feeds", total_feeds.to_s]
-    rows << ["Avg Daily Feeds", avg_daily.to_s]
-    rows << ["Total Volume", "#{total_volume} ml"]
+    rows = [ [ "Metric", "Value" ] ]
+    rows << [ "Total Feeds", total_feeds.to_s ]
+    rows << [ "Avg Daily Feeds", avg_daily.to_s ]
+    rows << [ "Total Volume", "#{total_volume} ml" ]
 
     # Breakdown by type
     Feeding.feed_types.each_key do |ft|
       count = feedings.where(feed_type: ft).count
-      rows << ["  #{ft.capitalize}", count.to_s] if count > 0
+      rows << [ "  #{ft.capitalize}", count.to_s ] if count > 0
     end
 
-    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [5, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [ 5, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12
@@ -163,23 +163,23 @@ class DoctorReportService
       return
     end
 
-    num_days = [(@end_date.to_date - @start_date.to_date).to_i, 1].max
+    num_days = [ (@end_date.to_date - @start_date.to_date).to_i, 1 ].max
     total = diapers.count
     avg_daily = (total.to_f / num_days).round(1)
 
-    rows = [["Metric", "Value"]]
-    rows << ["Total Changes", total.to_s]
-    rows << ["Avg Daily", avg_daily.to_s]
+    rows = [ [ "Metric", "Value" ] ]
+    rows << [ "Total Changes", total.to_s ]
+    rows << [ "Avg Daily", avg_daily.to_s ]
 
     DiaperChange.diaper_types.each_key do |dt|
       count = diapers.where(diaper_type: dt).count
-      rows << ["  #{dt.capitalize}", count.to_s] if count > 0
+      rows << [ "  #{dt.capitalize}", count.to_s ] if count > 0
     end
 
-    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [5, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [ 5, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12
@@ -198,24 +198,24 @@ class DoctorReportService
       return
     end
 
-    num_days = [(@end_date.to_date - @start_date.to_date).to_i, 1].max
+    num_days = [ (@end_date.to_date - @start_date.to_date).to_i, 1 ].max
     total_minutes = sleeps.where.not(duration_minutes: nil).sum(:duration_minutes)
     avg_daily_hours = (total_minutes.to_f / num_days / 60).round(1)
 
     nap_minutes = sleeps.where(sleep_type: "nap").where.not(duration_minutes: nil).sum(:duration_minutes)
     night_minutes = sleeps.where(sleep_type: "night").where.not(duration_minutes: nil).sum(:duration_minutes)
 
-    rows = [["Metric", "Value"]]
-    rows << ["Avg Daily Sleep", "#{avg_daily_hours} hours"]
-    rows << ["Total Nap Time", format_duration(nap_minutes)]
-    rows << ["Total Night Sleep", format_duration(night_minutes)]
-    rows << ["Nap Sessions", sleeps.where(sleep_type: "nap").count.to_s]
-    rows << ["Night Sessions", sleeps.where(sleep_type: "night").count.to_s]
+    rows = [ [ "Metric", "Value" ] ]
+    rows << [ "Avg Daily Sleep", "#{avg_daily_hours} hours" ]
+    rows << [ "Total Nap Time", format_duration(nap_minutes) ]
+    rows << [ "Total Night Sleep", format_duration(night_minutes) ]
+    rows << [ "Nap Sessions", sleeps.where(sleep_type: "nap").count.to_s ]
+    rows << [ "Night Sessions", sleeps.where(sleep_type: "night").count.to_s ]
 
-    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [5, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width * 0.6, cell_style: { size: 10, padding: [ 5, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12
@@ -236,7 +236,7 @@ class DoctorReportService
       return
     end
 
-    rows = [["Date", "Milestone", "Category"]]
+    rows = [ [ "Date", "Milestone", "Category" ] ]
     milestones.each do |m|
       rows << [
         m.achieved_on.strftime("%b %d, %Y"),
@@ -245,10 +245,10 @@ class DoctorReportService
       ]
     end
 
-    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [5, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [ 5, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12
@@ -272,7 +272,7 @@ class DoctorReportService
       pdf.text "Administered", size: 11, style: :bold
       pdf.move_down 4
 
-      rows = [["Vaccine", "Date"]]
+      rows = [ [ "Vaccine", "Date" ] ]
       administered.each do |v|
         rows << [
           v.vaccine_name,
@@ -280,10 +280,10 @@ class DoctorReportService
         ]
       end
 
-      pdf.table(rows, width: pdf.bounds.width * 0.7, cell_style: { size: 10, padding: [4, 8] }) do |t|
+      pdf.table(rows, width: pdf.bounds.width * 0.7, cell_style: { size: 10, padding: [ 4, 8 ] }) do |t|
         t.row(0).font_style = :bold
         t.row(0).background_color = HEADER_BG
-        t.cells.borders = [:bottom]
+        t.cells.borders = [ :bottom ]
         t.cells.border_color = "DDDDDD"
       end
       pdf.move_down 8
@@ -293,7 +293,7 @@ class DoctorReportService
       pdf.text "Upcoming / Pending", size: 11, style: :bold
       pdf.move_down 4
 
-      rows = [["Vaccine", "Recommended Date", "Status"]]
+      rows = [ [ "Vaccine", "Recommended Date", "Status" ] ]
       upcoming.each do |v|
         status = v.overdue? ? "OVERDUE" : "Pending"
         rows << [
@@ -303,10 +303,10 @@ class DoctorReportService
         ]
       end
 
-      pdf.table(rows, width: pdf.bounds.width * 0.85, cell_style: { size: 10, padding: [4, 8] }) do |t|
+      pdf.table(rows, width: pdf.bounds.width * 0.85, cell_style: { size: 10, padding: [ 4, 8 ] }) do |t|
         t.row(0).font_style = :bold
         t.row(0).background_color = HEADER_BG
-        t.cells.borders = [:bottom]
+        t.cells.borders = [ :bottom ]
         t.cells.border_color = "DDDDDD"
       end
     end
@@ -327,7 +327,7 @@ class DoctorReportService
       return
     end
 
-    rows = [["Date", "Title", "Provider", "Location"]]
+    rows = [ [ "Date", "Title", "Provider", "Location" ] ]
     appointments.each do |a|
       rows << [
         a.scheduled_at.strftime("%b %d, %Y %I:%M %p"),
@@ -337,10 +337,10 @@ class DoctorReportService
       ]
     end
 
-    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [4, 8] }) do |t|
+    pdf.table(rows, width: pdf.bounds.width, cell_style: { size: 10, padding: [ 4, 8 ] }) do |t|
       t.row(0).font_style = :bold
       t.row(0).background_color = HEADER_BG
-      t.cells.borders = [:bottom]
+      t.cells.borders = [ :bottom ]
       t.cells.border_color = "DDDDDD"
     end
     pdf.move_down 12

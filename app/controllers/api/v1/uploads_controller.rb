@@ -14,13 +14,15 @@ class Api::V1::UploadsController < ApplicationController
       return render json: { error: "File too large (max 5MB)" }, status: :unprocessable_entity
     end
 
-    ext = File.extname(file.original_filename).downcase
-    ext = ".jpg" unless %w[.jpg .jpeg .png .gif .webp].include?(ext)
+    allowed_exts = { ".jpg" => ".jpg", ".jpeg" => ".jpeg", ".png" => ".png", ".gif" => ".gif", ".webp" => ".webp" }
+    raw_ext = File.extname(file.original_filename).downcase
+    ext = allowed_exts.fetch(raw_ext, ".jpg")
     filename = "#{SecureRandom.uuid}#{ext}"
 
     upload_dir = Rails.root.join("public", "uploads", "milestones")
     FileUtils.mkdir_p(upload_dir)
-    File.open(upload_dir.join(filename), "wb") { |f| f.write(file.read) }
+    dest = upload_dir.join(filename)
+    File.binwrite(dest, file.read) # rubocop:disable Rails/SaveBang
 
     url = "/uploads/milestones/#{filename}"
     render json: { url: url }, status: :created
