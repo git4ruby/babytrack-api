@@ -114,3 +114,4 @@ bundle exec rspec spec/models/       # model specs only
 bundle exec rspec spec/requests/     # API request specs
 bundle exec rspec spec/services/     # service specs
 ```
+# Auto-deploy test
