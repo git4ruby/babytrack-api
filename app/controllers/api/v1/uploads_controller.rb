@@ -17,14 +17,47 @@ class Api::V1::UploadsController < ApplicationController
     allowed_exts = { ".jpg" => ".jpg", ".jpeg" => ".jpeg", ".png" => ".png", ".gif" => ".gif", ".webp" => ".webp" }
     raw_ext = File.extname(file.original_filename).downcase
     ext = allowed_exts.fetch(raw_ext, ".jpg")
-    filename = "#{SecureRandom.uuid}#{ext}"
+    key = "photos/#{SecureRandom.uuid}#{ext}"
 
-    upload_dir = Rails.root.join("public", "uploads", "milestones")
-    FileUtils.mkdir_p(upload_dir)
-    dest = upload_dir.join(filename)
-    File.binwrite(dest, file.read) # rubocop:disable Rails/SaveBang
+    if r2_configured?
+      upload_to_r2(key, file)
+      url = "#{ENV.fetch('R2_PUBLIC_URL')}/#{key}"
+    else
+      upload_locally(key, file)
+      url = "/uploads/#{key}"
+    end
 
-    url = "/uploads/milestones/#{filename}"
     render json: { url: url }, status: :created
+  end
+
+  private
+
+  def r2_configured?
+    ENV["R2_ACCESS_KEY_ID"].present? && ENV["R2_BUCKET"].present?
+  end
+
+  def r2_client
+    @r2_client ||= Aws::S3::Client.new(
+      region: "auto",
+      endpoint: ENV.fetch("R2_ENDPOINT"),
+      access_key_id: ENV.fetch("R2_ACCESS_KEY_ID"),
+      secret_access_key: ENV.fetch("R2_SECRET_ACCESS_KEY"),
+      force_path_style: true
+    )
+  end
+
+  def upload_to_r2(key, file)
+    r2_client.put_object(
+      bucket: ENV.fetch("R2_BUCKET"),
+      key: key,
+      body: file.read,
+      content_type: file.content_type
+    )
+  end
+
+  def upload_locally(key, file)
+    dest = Rails.root.join("public", "uploads", key)
+    FileUtils.mkdir_p(File.dirname(dest))
+    File.binwrite(dest, file.read)
   end
 end
