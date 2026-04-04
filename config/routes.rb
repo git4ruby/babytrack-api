@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       # User profile
       resource :profile, only: [ :show, :update ], controller: "profile" do
         patch :change_password, on: :member
+        post :accept_terms, on: :member
         post :telegram_link, on: :member
         delete :telegram_unlink, on: :member
       end

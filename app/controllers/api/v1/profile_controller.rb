@@ -11,9 +11,16 @@ class Api::V1::ProfileController < ApplicationController
         sms_enabled: current_user.sms_enabled,
         telegram_linked: current_user.telegram_chat_id.present?,
         telegram_accounts: parse_telegram_accounts(current_user.telegram_chat_id),
-        email_verified: current_user.email_verified
+        email_verified: current_user.email_verified,
+        terms_accepted: current_user.terms_accepted_at.present?
       }
     }
+  end
+
+  # POST /api/v1/profile/accept_terms
+  def accept_terms
+    current_user.update!(terms_accepted_at: Time.current)
+    render json: { message: "Terms accepted" }
   end
 
   # PATCH /api/v1/profile
