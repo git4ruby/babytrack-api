@@ -76,7 +76,8 @@ class Api::V1::BabiesController < ApplicationController
       head_circumference_cm: baby.head_circumference_cm,
       age_in_days: baby.age_in_days,
       age_in_weeks: baby.age_in_weeks,
-      notes: baby.notes
+      notes: baby.notes,
+      is_owner: baby.user_id == current_user.id
     }
   end
 end
