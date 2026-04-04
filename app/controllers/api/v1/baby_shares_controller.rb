@@ -47,6 +47,8 @@ class Api::V1::BabySharesController < ApplicationController
     # If user is logged in, link to them
     if current_user
       share.update!(user: current_user, status: "accepted", accepted_at: Time.current)
+      # Auto-verify email — they proved ownership by clicking the invite link
+      current_user.update!(email_verified: true) unless current_user.email_verified?
       render json: { message: "You now have access to #{share.baby.name}" }
     else
       # Not logged in — redirect to signup with token
