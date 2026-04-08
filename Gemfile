@@ -36,7 +36,7 @@ gem "prawn", "~> 2.5"
 gem "prawn-table", "~> 0.2"
 
 # Cloud storage (Cloudflare R2)
-gem "aws-sdk-s3", "~> 1.170"
+gem "aws-sdk-s3", "~> 1.219"
 
 # Error tracking
 gem "sentry-ruby", "~> 5.22"
