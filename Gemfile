@@ -13,7 +13,7 @@ gem "devise-jwt", "~> 0.12"
 
 # Background jobs
 gem "sidekiq", "~> 7.3"
-gem "sidekiq-scheduler", "~> 5.0"
+gem "sidekiq-scheduler", "~> 6.0"
 gem "connection_pool", "~> 2.4"
 
 # API
