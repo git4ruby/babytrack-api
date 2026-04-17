@@ -22,7 +22,7 @@ gem "kaminari"
 gem "rack-attack"
 
 # Twilio SMS
-gem "twilio-ruby", "~> 7.0"
+gem "twilio-ruby", "~> 7.10"
 
 # Gmail polling
 gem "net-imap"

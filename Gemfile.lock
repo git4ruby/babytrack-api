@@ -173,7 +173,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.2)
+    json (2.19.3)
     jwt (3.1.2)
       base64
     kaminari (1.2.2)
@@ -399,7 +399,7 @@ GEM
     tsort (0.2.0)
     ttfunk (1.8.0)
       bigdecimal (~> 3.1)
-    twilio-ruby (7.10.4)
+    twilio-ruby (7.10.5)
       faraday (>= 0.9, < 3.0)
       jwt (>= 1.5, < 4.0)
       nokogiri (>= 1.6, < 2.0)
@@ -467,7 +467,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq (~> 7.3)
   sidekiq-scheduler (~> 5.0)
-  twilio-ruby (~> 7.0)
+  twilio-ruby (~> 7.10)
   tzinfo-data
 
 BUNDLED WITH
